@@ -1,7 +1,4 @@
 
-#include <iostream>
-#include <string>
-
 #include <Engine\Engine.h>
 
 int main()
@@ -23,4 +20,3 @@ int main()
 		ctx.display();
 	}
 }
-

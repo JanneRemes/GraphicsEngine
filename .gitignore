@@ -27,6 +27,8 @@
 *.out
 *.app
 
-# Custom - Visual Studio files
+# Custom
 *.sdf
+*.opensdf
 */obj
+*/Engine/bin/
