@@ -10,6 +10,7 @@
 #include <string>
 #include <codecvt>
 #include <cstdarg>
+#include <algorithm>
 #include <Windows.h>
 
 enum class Severity
@@ -22,6 +23,15 @@ enum class Severity
 class Util
 {
 public:
+	template<typename T>
+	static std::vector<T> GetUnique(const std::vector<T>& vec)
+	{
+		std::vector<T> copy(vec);
+		std::sort(copy.begin(), copy.end());
+		copy.erase(std::unique(copy.begin(), copy.end()), copy.end());
+		return copy;
+	}
+
 	static fpos_t GetFileSize(std::fstream& stream)
 	{
 		const fpos_t orig = stream.tellg();

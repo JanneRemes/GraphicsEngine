@@ -4,5 +4,6 @@
 
 #include <Engine/Window.h>
 #include <Engine/Context.h>
+#include <Engine/FileManager.h>
 
 #endif // Include guard

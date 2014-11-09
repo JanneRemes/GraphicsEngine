@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Context.cpp" />
+    <ClCompile Include="source\FileManager.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Window.cpp" />
   </ItemGroup>
