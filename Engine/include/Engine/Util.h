@@ -22,6 +22,15 @@ enum class Severity
 class Util
 {
 public:
+	static fpos_t GetFileSize(std::fstream& stream)
+	{
+		const fpos_t orig = stream.tellg();
+		stream.seekg(0, std::ios_base::end);
+		const fpos_t size = stream.tellg();
+		stream.seekg(orig, std::ios_base::beg);
+		return size;
+	}
+
 	static bool ReadTextFile(const std::string& filepath, std::string& out)
 	{
 		std::ifstream in(filepath);
