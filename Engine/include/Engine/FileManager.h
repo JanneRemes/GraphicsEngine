@@ -22,7 +22,7 @@ class FileManager
 		fullpath: The entire path, including the root folder
 		  return: Whether the file was loaded
 	*/
-	SharedFile read(const std::string& fullpath)
+	SharedFile read(const std::string& fullpath) const
 	{
 		std::fstream in(fullpath, std::ios_base::in | std::ios_base::binary);
 
@@ -52,9 +52,9 @@ class FileManager
 	}
 public:
 	/*
-		[ The object that's internally used to hash all paths ]
+		[ The object that's internally used to hash all filepaths ]
 	*/
-	static const std::hash<std::string> Hash;
+	const std::hash<std::string> Hash;
 
 	/*
 		[ Construct a new FileManager using the specified root folder ]
@@ -232,7 +232,7 @@ public:
 		filepath: Path to the file, relative to the root folder
 		  return: A shared_ptr to the file data, or nullptr if it doesn't exist
 	*/
-	SharedFile get(const std::string& filepath)
+	SharedFile get(const std::string& filepath) const
 	{
 		const auto it = m_Files.find(Hash(m_RootFolder + filepath));
 
@@ -249,7 +249,7 @@ public:
 		  hash: Hash of the root folder and a filepath
 		return: A shared_ptr to the file data, or nullptr if it doesn't exist
 	*/
-	SharedFile get(size_t hash)
+	SharedFile get(size_t hash) const
 	{
 		const auto it = m_Files.find(hash);
 
@@ -261,7 +261,5 @@ public:
 		return nullptr;
 	}
 };
-
-const std::hash<std::string> FileManager::Hash;
 
 #endif // Include guard
