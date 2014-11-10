@@ -19,8 +19,8 @@ Context::Context(HWND hwnd)
 	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
 	pfd.iPixelType = LPD_TYPE_RGBA;
 	pfd.cColorBits = 24; // n bit RGBA, excluding alpha
-	pfd.cDepthBits = 32;
-	pfd.cStencilBits = 32;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
 	int nFormat = ChoosePixelFormat(m_DeviceContext, &pfd);
@@ -72,6 +72,7 @@ Context::~Context()
 {
 	// TODO: Clean up OpenGL resources. (Buffers, Arrays, Shaders, etc.)
 
+	wglMakeCurrent(m_DeviceContext, nullptr);
 	wglDeleteContext(m_RenderContext);
 	ReleaseDC(m_WindowHandle, m_DeviceContext);
 }
