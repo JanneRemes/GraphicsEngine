@@ -9,16 +9,17 @@ class Shader final
 {
 	bool validateShader(GLuint shader);
 	bool validateProgram(GLuint program);
+	bool init(const char* vertexSource, const char* fragmentSource);
 public:
 	static const std::string DefaultVertex;
 	static const std::string DefaultFragment;
 
 	Shader() = default;
-	Shader(const std::string& vertexPath, const std::string& fragmentPath);
 	Shader(const Shader& other) = default;
 	~Shader();
 
-	bool init(const std::string& vertexPath, const std::string& fragmentPath);
+	bool fromFile(const std::string& vertexPath, const std::string& fragmentPath);
+	bool fromSource(const std::string& vertexSource, const std::string& fragmentSource);
 
 	GLuint getProgram() const;
 private:

@@ -7,6 +7,9 @@ int main()
 	Context ctx(wnd.getHandle());
 	Event e;
 
+	Shader shader;
+	shader.fromSource(Shader::DefaultVertex, Shader::DefaultFragment);
+	
 	while (wnd.isOpen())
 	{
 		while (wnd.pollEvent(e))
@@ -15,8 +18,8 @@ int main()
 				wnd.close();
 		}
 
-		ctx.clear();
+		ctx.clear({0.1f, 0.3f, 0.4f, 1.0f});
 
-		ctx.display();
+		ctx.swap();
 	}
 }

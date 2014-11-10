@@ -5,33 +5,39 @@
 #include <Engine/Shader.h>
 #include <Engine/Util.h>
 
-static const std::string DefaultVertex =
-"\n" "#version 150"
-"\n"
-"\n" "uniform mat4 u_ModelViewProjection;"
-"\n" "in      vec3 i_Position;"
-"\n" "in      vec4 i_Color;"
-"\n" "in      vec4 i_UV;"
-"\n" "out     vec4 o_Color;"
-"\n"
-"\n" "void main()"
-"\n" "{"
-"\n" "    o_Color = i_Color;"
-"\n" "    gl_Position = u_ModelViewProjection * vec4(i_Position, 1.0);"
-"\n" "}"
-"\n";
+#ifdef GLSL
+#error 'GLSL' already defined
+#else
+#define GLSL(source) "#version 150 core\n" #source
 
-static const std::string DefaultFragment =
-"\n" "#version 150 core"
-"\n"
-"\n" "in  vec4 i_Color;"
-"\n" "out vec4 o_Color;"
-"\n"
-"\n" "void main()"
-"\n" "{"
-"\n" "    o_Color = i_Color;"
-"\n" "}"
-"\n";
+const std::string Shader::DefaultVertex = GLSL
+(
+	uniform mat4 u_ModelViewProjection;
+	in      vec3 i_Position;
+	in      vec4 i_Color;
+	in      vec4 i_UV;
+	out     vec4 o_Color;
+
+	void main()
+	{
+		o_Color = i_Color;
+		gl_Position = u_ModelViewProjection * vec4(i_Position, 1.0);
+	}
+);
+
+const std::string Shader::DefaultFragment = GLSL
+(
+	in  vec4 i_Color;
+	out vec4 o_Color;
+
+	void main()
+	{
+		o_Color = i_Color;
+	}
+);
+
+#undef GLSL
+#endif
 
 /*
 	PRIVATE
@@ -41,7 +47,7 @@ bool Shader::validateShader(GLuint shader)
 	GLint logLength;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 
-	if (logLength > 0)
+	if (logLength > 1)
 	{
 		std::vector<GLchar> log(logLength);
 		glGetShaderInfoLog(shader, logLength, nullptr, log.data());
@@ -58,7 +64,7 @@ bool Shader::validateProgram(GLuint program)
 	GLint logLength;
 	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 
-	if (logLength > 0)
+	if (logLength > 1)
 	{
 		std::vector<GLchar> log(logLength);
 		glGetProgramInfoLog(program, logLength, nullptr, log.data());
@@ -73,11 +79,6 @@ bool Shader::validateProgram(GLuint program)
 /*
 	PUBLIC
 */
-Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
-{
-	init(vertexPath, fragmentPath);
-}
-
 Shader::~Shader()
 {
 	glDetachShader(m_Program, m_FragmentShader);
@@ -87,20 +88,30 @@ Shader::~Shader()
 	glDeleteProgram(m_Program);
 }
 
-bool Shader::init(const std::string& vertexPath, const std::string& fragmentPath)
+bool Shader::fromFile(const std::string& vertexPath, const std::string& fragmentPath)
 {
-	if (m_IsInitialized)
-	{
-		std::cerr << "Error: Attempted to initialize Shader twice! Create new a shader instead.\n";
-		return false;
-	}
-
-	char const* vertexSource = nullptr;
-	char const* fragmentSource = nullptr;
+	std::string vertexSource;
+	std::string fragmentSource;
 
 	if (!Util::ReadTextFile(vertexPath, vertexSource) ||
 		!Util::ReadTextFile(fragmentPath, fragmentSource))
 	{
+		return false;
+	}
+
+	return init(vertexSource.c_str(), fragmentSource.c_str());
+}
+
+bool Shader::fromSource(const std::string& vertexSource, const std::string& fragmentSource)
+{
+	return init(vertexSource.c_str(), fragmentSource.c_str());
+}
+
+bool Shader::init(const char* vertexSource, const char* fragmentSource)
+{
+	if (m_IsInitialized)
+	{
+		std::cerr << "Error: Attempted to initialize Shader twice! Create new a shader instead.\n";
 		return false;
 	}
 

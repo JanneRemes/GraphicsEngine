@@ -9,29 +9,30 @@ FileManager::SharedFile FileManager::read(const std::string& fullpath) const
 {
 	std::fstream in(fullpath, std::ios_base::in | std::ios_base::binary);
 
-	if (in.is_open()) // Error: Unable to open file
+	if (in.is_open())
 	{
 		SharedFile file = std::make_shared<File>();
 		file->reserve(static_cast<size_t>(Util::GetFileSize(in)));
+		char c;
 
 		while (true)
 		{
-			file->push_back(in.get());
+			c = in.get();
 
 			if (in.eof())
-			{
-				file->push_back(0);
 				break;
-			}
 
 			if (in.fail())
 				return nullptr; // Error: Unable to read file
+
+			file->push_back(c);
 		}
 
+		file->shrink_to_fit();
 		return file;
 	}
 
-	return nullptr;
+	return nullptr; // Error: Unable to open file
 }
 	
 FileManager::FileManager(const std::string& rootFolder)

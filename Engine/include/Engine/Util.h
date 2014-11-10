@@ -48,39 +48,22 @@ public:
 		if (in.is_open())
 		{
 			std::stringstream ss;
+			char c;
 
-			while (!in.eof())
+			while (true)
 			{
+				c = in.get();
+
+				if (in.eof())
+					break;
+
 				if (in.fail())
 					return false; // Error: Unable to read file
 				
-				ss << in.get();
+				ss << c;
 			}
 
 			out = ss.str();
-			return true; // Success
-		}
-
-		return false; // Error: Unable to open file
-	}
-
-	static bool ReadTextFile(const std::string& filepath, const char* out)
-	{
-		std::ifstream in(filepath);
-
-		if (in.is_open())
-		{
-			std::stringstream ss;
-
-			while (!in.eof())
-			{
-				if (in.fail())
-					return false; // Error: Unable to read file
-
-				ss << in.get();
-			}
-
-			out = ss.str().c_str();
 			return true; // Success
 		}
 
