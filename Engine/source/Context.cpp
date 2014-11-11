@@ -213,17 +213,16 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 		m_RenderContext = tempContext;
 	}
 
-	setViewport(0, 0, wndSize.x, wndSize.y);
-	
 	// If MSAA is enabled, generate a FBO for it
 	if (m_IsMSAA_Enabled)
 	{
 		glGenFramebuffers(1, &m_MSAA_FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_MSAA_FBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
-
 		glEnable(GL_MULTISAMPLE);
 	}
+
+	setViewport(0, 0, wndSize.x, wndSize.y);
+
 }
 
 Context::~Context()
@@ -269,6 +268,7 @@ void Context::setViewport(int x, int y, int w, int h)
 		glGenTextures(1, &m_MSAA_Texture);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, w, h, false);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
 	}
 
 }

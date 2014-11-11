@@ -17,6 +17,8 @@ bool Texture::init(const unsigned char* png, size_t size)
 	glGenTextures(1, &m_TextureId);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+
+	return true;
 }
 
 Texture::~Texture()

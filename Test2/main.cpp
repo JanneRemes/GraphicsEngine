@@ -152,15 +152,15 @@ int main()
 		// Blend setup
 		{
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, 1.0f);		
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		}
 
 		// Reflection
 		{
-			glUniform1f(alphaIndex, 0.25f);
+			glUniform1f(alphaIndex, 0.20f);
 
 			worldTransform = glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::vec3(1.0f, -1.0f, 1.0f));
-			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, reinterpret_cast<float*>(&worldTransform));
+			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, glm::value_ptr(worldTransform));
 
 			glVertexAttribPointer(positionIndex, 3, GL_FLOAT, GL_FALSE, FloorStride, WallVertices);
 			glVertexAttribPointer(colorIndex, 3, GL_FLOAT, GL_FALSE, FloorStride, WallVertices + FloorColorOffset);
@@ -183,7 +183,7 @@ int main()
 			glUniform1f(alphaIndex, 1.0f);
 
 			worldTransform = glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
-			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, reinterpret_cast<float*>(&worldTransform));
+			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, glm::value_ptr(worldTransform));
 
 			glDrawElements(GL_TRIANGLES, FloorIndexCount, GL_UNSIGNED_INT, FloorIndices);
 		}
