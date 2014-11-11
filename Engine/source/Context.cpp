@@ -50,17 +50,17 @@ const GLDEBUGPROC Context::DebugProc = [](GLenum source, GLenum type, GLuint id,
 };
 #endif
 
-Context::Context(HWND hwnd, const ContextSettings& settings)
+Context::Context(const Window& wnd, const ContextSettings& settings)
 {
 	// If a null window handle was provided, there's nothing to be done
-	if (hwnd == nullptr)
+	if (wnd.getHandle()  == nullptr)
 	{
 		throw std::runtime_error("Error: Cannot create opengl context from a null window handle.");
 	}
 
-	m_WindowHandle = hwnd;
+	m_WindowHandle = wnd.getHandle();
 	m_DeviceContext = GetDC(m_WindowHandle);
-
+	
 	// Create temporary context for setup purposes. (Required by the following steps)
 	HGLRC tempContext = nullptr;
 	{
@@ -110,11 +110,13 @@ Context::Context(HWND hwnd, const ContextSettings& settings)
 		}
 	}
 
+
 	// Get a valid pixel format
-	int pixelFormat;
+	int pixelFormat = 0;
+
 	if (settings.AntialiasLevel > 0)
 	{
-		int attributes[] =
+		int attributes[]
 		{
 			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
 			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
@@ -132,6 +134,21 @@ Context::Context(HWND hwnd, const ContextSettings& settings)
 		{
 			pixelFormat = 0;
 		}
+
+		// Check whether we got some level of MSAA
+		{
+			const int inAttributes[2]
+			{
+				WGL_SAMPLE_BUFFERS_ARB,
+				WGL_SAMPLES_ARB
+			};
+			int outValues[2];
+
+			wglGetPixelFormatAttribivARB(m_DeviceContext, pixelFormat, 0, 2, inAttributes, outValues);
+			m_IsMSAA_Enabled = (outValues[0] == 1) && (outValues[1] > 0);
+			m_MSAA_Samples = outValues[1];
+		}
+
 	}
 	
 	// Fallback to a basic pixel format, if the extension doesn't work
@@ -160,6 +177,9 @@ Context::Context(HWND hwnd, const ContextSettings& settings)
 	GLint majorVersion, minorVersion;
 	glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
 	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+	// Create the real OpenGL context
+	const glm::ivec2 wndSize(wnd.getSize());
 
 	if (majorVersion > 3)
 	{
@@ -192,6 +212,18 @@ Context::Context(HWND hwnd, const ContextSettings& settings)
 	{
 		m_RenderContext = tempContext;
 	}
+
+	setViewport(0, 0, wndSize.x, wndSize.y);
+	
+	// If MSAA is enabled, generate a FBO for it
+	if (m_IsMSAA_Enabled)
+	{
+		glGenFramebuffers(1, &m_MSAA_FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_MSAA_FBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
+
+		glEnable(GL_MULTISAMPLE);
+	}
 }
 
 Context::~Context()
@@ -211,9 +243,34 @@ Context::~Context()
 	}
 }
 
-void Context::setViewport(const glm::ivec2& position, const glm::ivec2& size) const
+void Context::setViewport(const glm::ivec4& rect)
 {
-	glViewport(position.x, position.y, size.x, size.y);
+	setViewport(rect.x, rect.y, rect.z, rect.w);
+}
+
+void Context::setViewport(const glm::ivec2& position, const glm::ivec2& size)
+{
+	setViewport(position.x, position.y, size.x, size.y);
+}
+
+void Context::setViewport(int x, int y, int w, int h)
+{
+	m_ViewPort.x = x;
+	m_ViewPort.y = y;
+	m_ViewPort.z = w;
+	m_ViewPort.w = h;
+
+	glViewport(x, y, w, h);
+
+	if (m_IsMSAA_Enabled)
+	{
+		if (m_MSAA_Texture != 0)
+			glDeleteSamplers(1, &m_MSAA_Texture);
+		glGenTextures(1, &m_MSAA_Texture);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, w, h, false);
+	}
+
 }
 
 void Context::clear(const glm::vec4& color, GLbitfield mask) const
@@ -224,5 +281,26 @@ void Context::clear(const glm::vec4& color, GLbitfield mask) const
 
 void Context::swap() const
 {
-	SwapBuffers(m_DeviceContext);
+	if (m_IsMSAA_Enabled)
+	{
+		// Scene is rendered with MSAA. Now draw it to the actual backbuffer
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MSAA_FBO);
+		glDrawBuffer(GL_BACK);
+
+		glBlitFramebuffer(
+			m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w,
+			m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w,
+			GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+		// Regular swap
+		SwapBuffers(m_DeviceContext);
+
+		// Reset the draw destination to the MSAA FBO
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_MSAA_FBO);
+	}
+	else
+	{
+		SwapBuffers(m_DeviceContext);
+	}
 }

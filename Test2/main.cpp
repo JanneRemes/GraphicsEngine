@@ -4,43 +4,6 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-/*
-static const GLfloat VertexData[] =
-{
-	// Top
-	0.0f, 0.75f, 0.0f,
-	1.0f, 1.0f, 1.0f,
-
-	// Front
-	0.0f, -0.75f, 1.0f,
-	1.0f, 0.0f, 0.0f,
-
-	// Right
-	1.0f, -0.75f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-
-	// Back
-	0.0f, -0.75f, -1.0f,
-	0.0f, 0.0f, 1.0f,
-
-	// Left
-	-1.0f, -0.75f, 0.0f,
-	1.0f, 0.0f, 1.0f
-};
-
-static const GLuint IndexData[] =
-{
-	0u, 1u, 2u,
-	0u, 2u, 3u,
-	0u, 3u, 4u,
-	0u, 4u, 1u
-};
-
-static const GLsizei STRIDE = 6 * sizeof(float);
-static const GLsizei COLOR_OFFSET = 3;
-static const GLsizei INDEX_COUNT = 4 * 3;
-/**/
-
 static const GLfloat FloorVertices[] =
 {
 	// Front left
@@ -64,7 +27,7 @@ static const GLfloat WallVertices[] =
 {
 	// Bottom left
 	-2.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 0.0f,
 
 	// Bottom right
 	2.0f, 0.0f, 0.0f,
@@ -76,7 +39,7 @@ static const GLfloat WallVertices[] =
 
 	// top right
 	2.0f, 4.0f, 0.0f,
-	0.0f, 1.0f, 0.0f
+	0.0f, 1.0f, 1.0f
 };
 
 static const GLuint FloorIndices[] =
@@ -93,13 +56,18 @@ int main()
 {
 	const glm::ivec2 wndSize(1280, 720);
 	Window wnd(wndSize);
-	Context ctx(wnd.getHandle());
 	Event e;
+
+	ContextSettings settings;
+	settings.ColorBits = 32;
+	settings.DepthBits = 24;
+	settings.StencilBits = 8;
+	settings.AntialiasLevel = 16;
+	Context ctx(wnd, settings);
 
 	Shader shader;
 	shader.fromFile("default.vert", "default.frag");
 	GLuint program = shader.getProgram();
-
 
 	// Enable attribute arrays
 	const GLint positionIndex = glGetAttribLocation(program, "Position");
@@ -133,12 +101,17 @@ int main()
 	glm::mat4 worldTransform;
 	float angle = 0.0f;
 
+	const GLint alphaIndex = glGetUniformLocation(program, "Alpha");
+
 	while (wnd.isOpen())
 	{
 		while (wnd.pollEvent(e))
 		{
 			if (e.type == Event::Closed)
 				wnd.close();
+
+			if (e.type == Event::Resized)
+				ctx.setViewport({ 0, 0 }, wnd.getSize());
 		}
 
 		glStencilMask(0xFF);
@@ -162,6 +135,8 @@ int main()
 
 		// Floor
 		{
+			glUniform1f(alphaIndex, 1.0f);
+
 			glVertexAttribPointer(positionIndex, 3, GL_FLOAT, GL_FALSE, FloorStride, FloorVertices);
 			glVertexAttribPointer(colorIndex, 3, GL_FLOAT, GL_FALSE, FloorStride, FloorVertices + FloorColorOffset);
 			glDrawElements(GL_TRIANGLES, FloorIndexCount, GL_UNSIGNED_INT, FloorIndices);
@@ -174,8 +149,16 @@ int main()
 			glDepthMask(GL_TRUE);
 		}
 
+		// Blend setup
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, 1.0f);		
+		}
+
 		// Reflection
 		{
+			glUniform1f(alphaIndex, 0.25f);
+
 			worldTransform = glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::vec3(1.0f, -1.0f, 1.0f));
 			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, reinterpret_cast<float*>(&worldTransform));
 
@@ -185,6 +168,11 @@ int main()
 			glDrawElements(GL_TRIANGLES, FloorIndexCount, GL_UNSIGNED_INT, FloorIndices);
 		}
 
+		// Disable blend
+		{
+			glDisable(GL_BLEND);
+		}
+
 		// Disable stencil testing
 		{
 			glDisable(GL_STENCIL_TEST);
@@ -192,6 +180,8 @@ int main()
 
 		// Wall
 		{
+			glUniform1f(alphaIndex, 1.0f);
+
 			worldTransform = glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
 			glUniformMatrix4fv(worldIndex, 1, GL_FALSE, reinterpret_cast<float*>(&worldTransform));
 

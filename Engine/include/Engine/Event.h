@@ -7,7 +7,8 @@ class Event
 public:
 	enum Type
 	{
-		Closed
+		Closed,
+		Resized
 	};
 
 	Type type;

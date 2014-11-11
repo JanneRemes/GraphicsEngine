@@ -7,7 +7,7 @@ struct ContextSettings
 	GLubyte ColorBits = 32;
 	GLubyte DepthBits = 24;
 	GLubyte StencilBits = 8;
-	GLubyte AntialiasLevel = 8;
+	GLubyte AntialiasLevel = 4;
 
 	ContextSettings() = default;
 

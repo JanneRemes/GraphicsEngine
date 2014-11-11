@@ -75,19 +75,23 @@ LRESULT Window::processMessage(UINT msg, WPARAM wp, LPARAM lp)
 		{
 			Event e;
 			e.type = Event::Closed;
-			
-			/* TEMP - Placeholder data*/
-			e.msg = msg;
-			e.wp = wp;
-			e.lp = lp;
-			/**/
+			/* TEMP */ e.msg = msg; e.wp = wp; e.lp = lp;
 
 			m_Events.push(std::move(e));
 			return 0;
 		}
-		default:
-			return DefWindowProcW(m_HWnd, msg, wp, lp);
+		case WM_SIZE:
+		{
+			Event e;
+			e.type = Event::Resized;
+			/* TEMP */ e.msg = msg; e.wp = wp; e.lp = lp;
+
+			m_Events.push(std::move(e));
+			break;
+		}
 	}
+
+	return DefWindowProcW(m_HWnd, msg, wp, lp);
 }
 
 bool Window::pollEvent(Event& out)
