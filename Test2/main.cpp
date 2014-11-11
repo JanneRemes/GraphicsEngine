@@ -55,7 +55,7 @@ static const GLsizei FloorIndexCount = 2 * 3;
 int main()
 {
 	const glm::ivec2 wndSize(1280, 720);
-	Window wnd(wndSize);
+	Window wnd(wndSize, L"Test2");
 	Event e;
 
 	ContextSettings settings;

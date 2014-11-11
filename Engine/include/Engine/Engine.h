@@ -6,5 +6,6 @@
 #include <Engine/Context.h>
 #include <Engine/Shader.h>
 #include <Engine/FileManager.h>
+#include <Engine/Texture.h>
 
 #endif // Include guard
