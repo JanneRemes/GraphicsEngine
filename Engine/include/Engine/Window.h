@@ -2,21 +2,23 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <string>
-#include <glm/glm.hpp>
 #include <Windows.h>
+#include <string>
 #include <queue>
+#include <glm/glm.hpp>
 #include <Engine/Event.h>
 
 class Window
 {
+	static size_t WndCount;
 	static const std::wstring WndClassname;
 	static const std::wstring WndDefaultTitle;
+	static const DWORD WndDefaultStyle;
 
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 	static void RegisterWindowClass();
 public:
-	Window(const glm::ivec2& wndSize, const std::wstring& wndTitle = Window::WndDefaultTitle);
+	Window(const glm::ivec2& wndSize, const std::wstring& wndTitle = WndDefaultTitle, DWORD style = WndDefaultStyle);
 	virtual ~Window();
 
 	LRESULT processMessage(UINT msg, WPARAM wp, LPARAM lp);
@@ -40,7 +42,6 @@ public:
 private:
 	HWND m_HWnd = nullptr;
 	bool m_isOpen = true;
-	size_t m_WndCount = 0;
 	std::queue<Event> m_Events;
 };
 

@@ -1,15 +1,14 @@
 ﻿
 #include <Engine/Context.h>
+#include <Engine/Util.h>
 #include <stdexcept>
 #include <vector>
 
-#include <Engine/Util.h>
-
 #ifdef _DEBUG
-const GLDEBUGPROC Context::DebugProc = [](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+void __stdcall Context::DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-	char* sourceStr   = nullptr;
-	char* typeStr     = nullptr;
+	char* sourceStr = nullptr;
+	char* typeStr = nullptr;
 	char* severityStr = nullptr;
 
 	switch (source)
@@ -58,8 +57,8 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 		throw std::runtime_error("Error: Cannot create opengl context from a null window handle.");
 	}
 
-	m_WindowHandle = wnd.getHandle();
-	m_DeviceContext = GetDC(m_WindowHandle);
+	m_WndHandle = wnd.getHandle();
+	m_DeviceContext = GetDC(m_WndHandle);
 	
 	// Create temporary context for setup purposes. (Required by the following steps)
 	HGLRC tempContext = nullptr;
@@ -104,8 +103,7 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 			}
 			else
 			{
-				std::fprintf(stderr, "GLEW Error: %s\n", glewGetErrorString(error));
-				throw std::runtime_error("Error: Unable to initialize GLEW.");
+				throw std::runtime_error(Util::Format("Error: Unable to initialize GLEW. (%s)", glewGetErrorString(error)));
 			}
 		}
 	}
@@ -113,7 +111,6 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 
 	// Get a valid pixel format
 	int pixelFormat = 0;
-
 	if (settings.AntialiasLevel > 0)
 	{
 		int attributes[]
@@ -145,7 +142,7 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 			int outValues[2];
 
 			wglGetPixelFormatAttribivARB(m_DeviceContext, pixelFormat, 0, 2, inAttributes, outValues);
-			m_IsMSAA_Enabled = (outValues[0] == 1) && (outValues[1] > 0);
+			m_MSAA_Enabled = (outValues[0] == 1) && (outValues[1] > 0);
 			m_MSAA_Samples = outValues[1];
 		}
 
@@ -179,8 +176,6 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
 
 	// Create the real OpenGL context
-	const glm::ivec2 wndSize(wnd.getSize());
-
 	if (majorVersion > 3)
 	{
 		int attributes[] =
@@ -203,7 +198,7 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 #ifdef _DEBUG
 		// Enable debug output and register a callback function
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallbackARB(Context::DebugProc, nullptr);
+		glDebugMessageCallbackARB(DebugProc, nullptr);
 #endif
 	}
 
@@ -213,23 +208,21 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 		m_RenderContext = tempContext;
 	}
 
+	m_WndSize = wnd.getSize();
+	glViewport(0, 0, m_WndSize.x, m_WndSize.y);
+
 	// If MSAA is enabled, generate a FBO for it
-	if (m_IsMSAA_Enabled)
+	if (m_MSAA_Enabled)
 	{
 		glGenFramebuffers(1, &m_MSAA_FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_MSAA_FBO);
 		glEnable(GL_MULTISAMPLE);
+
+		glGenTextures(1, &m_MSAA_Texture);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, m_WndSize.x, m_WndSize.y, false);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
 	}
-
-	glGenTextures(1, &m_MSAA_Texture);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, wndSize.x, wndSize.y, false);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
-
-	m_ViewPort = { 0, 0, wndSize.x, wndSize.y };
-
-	//setViewport(0, 0, wndSize.x, wndSize.y);
-
 }
 
 Context::~Context()
@@ -245,54 +238,33 @@ Context::~Context()
 
 	if (m_DeviceContext != nullptr)
 	{
-		ReleaseDC(m_WindowHandle, m_DeviceContext);
+		ReleaseDC(m_WndHandle, m_DeviceContext);
 	}
-}
-
-void Context::setViewport(const glm::ivec4& rect)
-{
-	setViewport(rect.x, rect.y, rect.z, rect.w);
-}
-
-void Context::setViewport(const glm::ivec2& position, const glm::ivec2& size)
-{
-	setViewport(position.x, position.y, size.x, size.y);
-}
-
-void Context::setViewport(int x, int y, int w, int h)
-{
-	m_ViewPort.x = x;
-	m_ViewPort.y = y;
-	m_ViewPort.z = w;
-	m_ViewPort.w = h;
-
-	glViewport(x, y, w, h);
 }
 
 void Context::clear(const glm::vec4& color, GLbitfield mask) const
 {
-	glClear(mask);
 	glClearColor(color.r, color.g, color.b, color.a);
+	glClear(mask);
 }
 
 void Context::swap() const
 {
-	if (m_IsMSAA_Enabled)
+	if (m_MSAA_Enabled)
 	{
-		// Scene is rendered with MSAA. Now draw it to the actual backbuffer
+		// MSAA buffer -> Read, Backbuffer -> Write
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MSAA_FBO);
 		glDrawBuffer(GL_BACK);
 
-		glBlitFramebuffer(
-			m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w,
-			m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w,
+		// Draw: MSAA buffer -> Backbuffer
+		glBlitFramebuffer(0, 0, m_WndSize.x, m_WndSize.y, 0, 0, m_WndSize.x, m_WndSize.y,
 			GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-		// Regular swap
+		// Swap backbuffers
 		SwapBuffers(m_DeviceContext);
 
-		// Reset the draw destination to the MSAA FBO
+		// MSAA buffer -> Write
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_MSAA_FBO);
 	}
 	else

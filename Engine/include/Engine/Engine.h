@@ -7,5 +7,6 @@
 #include <Engine/Shader.h>
 #include <Engine/FileManager.h>
 #include <Engine/Texture.h>
+#include <Engine/Buffer.h>
 
 #endif // Include guard

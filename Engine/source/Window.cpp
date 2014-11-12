@@ -1,56 +1,76 @@
 
 #include <Engine\Window.h>
-#include <cassert>
 
 /*
-	PRIVATE
+	- PRIVATE STATIC -
 */
+
+size_t Window::WndCount = 0;
 const std::wstring Window::WndClassname = L"MyWindowClass";
 const std::wstring Window::WndDefaultTitle = L"MyWindow";
+const DWORD Window::WndDefaultStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 LRESULT CALLBACK Window::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
+	// Get the pointer stored inside the window structure, and pass the message to it
 	Window* wnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 	return wnd ? wnd->processMessage(msg, wp, lp) : DefWindowProcW(hwnd, msg, wp, lp);
 };
 
 void Window::RegisterWindowClass()
 {
-	WNDCLASSEXW wc = { 0 };
+	WNDCLASSEXW wc;
+	memset(&wc, 0, sizeof(wc));
 	wc.cbSize = sizeof(wc);
 	wc.cbWndExtra = sizeof(Window*);
 	wc.hInstance = GetModuleHandleW(nullptr);
 	wc.lpszClassName = WndClassname.c_str();
-	wc.style = CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
-	assert(RegisterClassExW(&wc));
+	wc.style = CS_OWNDC;
+	RegisterClassExW(&wc);
 }
 
 /*
-	PUBLIC
+	- PUBLIC -
 */
-Window::Window(const glm::ivec2& wndSize, const std::wstring& wndTitle)
+
+Window::Window(const glm::ivec2& wndSize, const std::wstring& wndTitle, DWORD style)
 {
-	if (m_WndCount++ == 0)
+	// If this was the first window, register the window class
+	if (WndCount++ == 0)
 	{
 		Window::RegisterWindowClass();
 	}
 
-	static DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX;
+	// Measure the screen, and position the window to the center
+	const glm::ivec2 screenSize(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 
+	RECT rect;
+	rect.left = screenSize.x / 2 - wndSize.x / 2;
+	rect.top = screenSize.y / 2 - wndSize.y / 2;
+	rect.right = rect.left + wndSize.x;
+	rect.bottom = rect.top + wndSize.y;
+	AdjustWindowRectEx(&rect, style, 0, 0);
+
+	// Create the window
 	m_HWnd = CreateWindowExW(0, Window::WndClassname.c_str(), wndTitle.c_str(), style,
-		CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, nullptr, nullptr, GetModuleHandleW(nullptr), this);
+		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+		nullptr, nullptr, GetModuleHandleW(nullptr), this);
+
+	// Store a pointer to this, inside the window structure
 	SetWindowLongPtrW(m_HWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
-	setSize(wndSize);
+	// Show the window
 	setVisible(true);
 }
 
 Window::~Window()
 {
+	// Destroy the window
 	DestroyWindow(m_HWnd);
 
-	if (--m_WndCount == 0)
+	// If this was the last window, unregister the window class
+	if (--WndCount == 0)
 	{
 		UnregisterClassW(Window::WndClassname.c_str(), GetModuleHandleW(nullptr));
 	}
@@ -64,19 +84,14 @@ LRESULT Window::processMessage(UINT msg, WPARAM wp, LPARAM lp)
 		{
 			Event e;
 			e.type = Event::Closed;
-			/* TEMP */ e.msg = msg; e.wp = wp; e.lp = lp;
+
+			// TEMP - Placeholder data
+			e.msg = msg;
+			e.wp = wp;
+			e.lp = lp;
 
 			m_Events.push(std::move(e));
 			return 0;
-		}
-		case WM_SIZE:
-		{
-			Event e;
-			e.type = Event::Resized;
-			/* TEMP */ e.msg = msg; e.wp = wp; e.lp = lp;
-
-			m_Events.push(std::move(e));
-			break;
 		}
 	}
 

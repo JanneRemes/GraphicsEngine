@@ -24,6 +24,13 @@ class Util
 {
 public:
 	template<typename T>
+	static size_t GetTypeId()
+	{
+		static const char typeAddress;
+		return reinterpret_cast<size_t>(&typeAddress);
+	}
+
+	template<typename T>
 	static std::vector<T> GetUnique(const std::vector<T>& vec)
 	{
 		std::vector<T> copy(vec);
