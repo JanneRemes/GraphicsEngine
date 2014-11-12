@@ -7,7 +7,7 @@ const std::hash<std::string> FileManager::Hash;
 
 FileManager::SharedFile FileManager::read(const std::string& fullpath) const
 {
-	std::fstream in(fullpath, std::ios_base::in | std::ios_base::binary);
+	std::ifstream in(fullpath, std::ios_base::binary);
 
 	if (in.is_open())
 	{

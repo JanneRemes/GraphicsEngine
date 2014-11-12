@@ -17,6 +17,9 @@ bool Texture::init(const unsigned char* png, size_t size)
 	glGenTextures(1, &m_TextureId);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	return true;
 }
@@ -26,7 +29,7 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_TextureId);
 }
 
-bool Texture::fromData(const std::vector<char>& png)
+bool Texture::fromMemory(const std::vector<char>& png)
 {
 	return init(reinterpret_cast<const unsigned char*>(png.data()), png.size());
 }
@@ -43,6 +46,7 @@ void Texture::setSmooth(bool b)
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, b ? GL_LINEAR : GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, b ? GL_LINEAR : GL_NEAREST);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GLuint Texture::getId() const

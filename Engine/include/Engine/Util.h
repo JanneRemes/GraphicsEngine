@@ -32,7 +32,7 @@ public:
 		return copy;
 	}
 
-	static fpos_t GetFileSize(std::fstream& stream)
+	static fpos_t GetFileSize(std::ifstream& stream)
 	{
 		const fpos_t orig = stream.tellg();
 		stream.seekg(0, std::ios_base::end);

@@ -15,7 +15,7 @@ public:
 
 	~Texture();
 
-	bool fromData(const std::vector<char>& png);
+	bool fromMemory(const std::vector<char>& png);
 	
 	bool fromFile(const std::string& filepath);
 

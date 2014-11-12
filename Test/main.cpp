@@ -63,6 +63,10 @@ int main()
 	shader.fromFile("default.vert", "default.frag");
 	GLuint program = shader.getProgram();
 
+	Texture texture;
+	texture.fromFile("test.png");
+	GLuint textureId = texture.getId();
+
 	// Enable attribute arrays
 	const GLint positionIndex = glGetAttribLocation(program, "Position");
 	glEnableVertexAttribArray(positionIndex);

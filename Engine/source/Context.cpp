@@ -221,7 +221,14 @@ Context::Context(const Window& wnd, const ContextSettings& settings)
 		glEnable(GL_MULTISAMPLE);
 	}
 
-	setViewport(0, 0, wndSize.x, wndSize.y);
+	glGenTextures(1, &m_MSAA_Texture);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, wndSize.x, wndSize.y, false);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
+
+	m_ViewPort = { 0, 0, wndSize.x, wndSize.y };
+
+	//setViewport(0, 0, wndSize.x, wndSize.y);
 
 }
 
@@ -260,17 +267,6 @@ void Context::setViewport(int x, int y, int w, int h)
 	m_ViewPort.w = h;
 
 	glViewport(x, y, w, h);
-
-	if (m_IsMSAA_Enabled)
-	{
-		if (m_MSAA_Texture != 0)
-			glDeleteSamplers(1, &m_MSAA_Texture);
-		glGenTextures(1, &m_MSAA_Texture);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Samples, GL_RGBA32F, w, h, false);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAA_Texture, 0);
-	}
-
 }
 
 void Context::clear(const glm::vec4& color, GLbitfield mask) const

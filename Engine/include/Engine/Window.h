@@ -12,9 +12,9 @@ class Window
 {
 	static const std::wstring WndClassname;
 	static const std::wstring WndDefaultTitle;
-	static const WNDPROC WndProc;
-	static void RegisterWindowClass();
 
+	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+	static void RegisterWindowClass();
 public:
 	Window(const glm::ivec2& wndSize, const std::wstring& wndTitle = Window::WndDefaultTitle);
 	virtual ~Window();

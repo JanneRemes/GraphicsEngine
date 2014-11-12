@@ -8,21 +8,9 @@
 const std::wstring Window::WndClassname = L"MyWindowClass";
 const std::wstring Window::WndDefaultTitle = L"MyWindow";
 
-const WNDPROC Window::WndProc =
-[](HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT
+LRESULT CALLBACK Window::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	Window* wnd = nullptr;
-
-	if (msg == WM_CREATE)
-	{
-		wnd = static_cast<Window*>(reinterpret_cast<CREATESTRUCTW*>(lp)->lpCreateParams);
-		SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
-	}
-	else
-	{
-		wnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-	}
-
+	Window* wnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 	return wnd ? wnd->processMessage(msg, wp, lp) : DefWindowProcW(hwnd, msg, wp, lp);
 };
 
@@ -48,10 +36,11 @@ Window::Window(const glm::ivec2& wndSize, const std::wstring& wndTitle)
 		Window::RegisterWindowClass();
 	}
 
-	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX;
+	static DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX;
 
 	m_HWnd = CreateWindowExW(0, Window::WndClassname.c_str(), wndTitle.c_str(), style,
 		CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, nullptr, nullptr, GetModuleHandleW(nullptr), this);
+	SetWindowLongPtrW(m_HWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
 	setSize(wndSize);
 	setVisible(true);
