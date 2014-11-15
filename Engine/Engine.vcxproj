@@ -17,7 +17,7 @@
     <ClInclude Include="include\Engine\Engine.h" />
     <ClInclude Include="include\Engine\Event.h" />
     <ClInclude Include="include\Engine\FileManager.h" />
-    <ClInclude Include="include\Engine\GL.h" />
+    <ClInclude Include="include\Engine\GLUtil.h" />
     <ClInclude Include="include\Engine\Shader.h" />
     <ClInclude Include="include\Engine\Texture.h" />
     <ClInclude Include="include\Engine\Util.h" />

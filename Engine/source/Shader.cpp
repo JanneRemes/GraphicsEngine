@@ -76,6 +76,13 @@ bool Shader::validateProgram(GLuint program)
 	return true;
 }
 
+bool Shader::IsBound(GLuint program)
+{
+	GLint data;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &data);
+	return data == program;
+}
+
 /*
 	PUBLIC
 */
@@ -142,6 +149,16 @@ bool Shader::init(const char* vertexSource, const char* fragmentSource)
 
 	m_IsInitialized = true;
 	return true;
+}
+
+void Shader::bind() const
+{
+	glUseProgram(m_Program);
+}
+
+void Shader::unbind() const
+{
+	glUseProgram(0);
 }
 
 GLuint Shader::getProgram() const

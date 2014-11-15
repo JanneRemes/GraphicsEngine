@@ -52,6 +52,7 @@ static const GLsizei FloorStride = 6 * sizeof(float);
 static const GLsizei FloorColorOffset = 3;
 static const GLsizei FloorIndexCount = 2 * 3;
 
+
 int main()
 {
 	const glm::ivec2 wndSize(1280, 720);
@@ -62,6 +63,46 @@ int main()
 	Shader shader;
 	shader.fromFile("default.vert", "default.frag");
 	GLuint program = shader.getProgram();
+
+	glUseProgram(program);
+
+	Buffer<GLfloat> FloorVertices2(BufferType::Vertex, BufferUsage::StaticDraw,
+	{
+		BufferElement(3, "Position", 0),
+		BufferElement(3, "Color", 1),
+	},
+	{
+		// Front left
+		-3.0f, 0.0f, 3.0f,
+		0.0f, 0.0f, 0.0f,
+
+		// Front right
+		3.0f, 0.0f, 3.0f,
+		0.0f, 0.0f, 0.0f,
+
+		// Back left
+		-3.0f, 0.0f, -3.0f,
+		0.0f, 0.0f, 0.0f,
+
+		// Back right
+		3.0f, 0.0f, -3.0f,
+		0.0f, 0.0f, 0.0f
+	});
+
+	Buffer<GLuint> FloorIndices2(BufferType::Index, BufferUsage::StaticDraw,
+	{
+		BufferElement(1),
+	},
+	{
+		0u, 1u, 2u,
+		2u, 1u, 3u
+	});
+
+	glUseProgram(0);
+
+	GLint posAttrib = 1; // glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
 
 	Texture texture;
 	texture.fromFile("test.png");

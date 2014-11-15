@@ -14,12 +14,17 @@ public:
 	static const std::string DefaultVertex;
 	static const std::string DefaultFragment;
 
+	static bool IsBound(GLuint program);
+
 	Shader() = default;
 	Shader(const Shader& other) = default;
 	~Shader();
 
 	bool fromFile(const std::string& vertexPath, const std::string& fragmentPath);
 	bool fromSource(const std::string& vertexSource, const std::string& fragmentSource);
+
+	void bind() const;
+	void unbind() const;
 
 	GLuint getProgram() const;
 private:

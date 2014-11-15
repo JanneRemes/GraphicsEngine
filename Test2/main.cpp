@@ -109,9 +109,6 @@ int main()
 		{
 			if (e.type == Event::Closed)
 				wnd.close();
-
-			if (e.type == Event::Resized)
-				ctx.setViewport({ 0, 0 }, wnd.getSize());
 		}
 
 		glStencilMask(0xFF);

@@ -2,66 +2,109 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <stdexcept>
+#include <Engine/GLUtil.h>
 #include <glew/glew.h>
+#include <stdexcept>
 #include <vector>
+
+enum class BufferType : GLenum
+{
+	Vertex = GL_ARRAY_BUFFER,
+	Index = GL_ELEMENT_ARRAY_BUFFER
+};
+
+enum class BufferUsage : GLenum
+{
+	StaticDraw = GL_STATIC_DRAW,
+	DynamicDraw = GL_DYNAMIC_DRAW,
+	StreamDraw = GL_STREAM_DRAW,
+
+	StaticRead = GL_STATIC_READ,
+	DynamicRead = GL_DYNAMIC_READ,
+	StreamRead = GL_STREAM_READ,
+
+	StaticCopy = GL_STATIC_COPY,
+	DynamicCopy = GL_DYNAMIC_COPY,
+	StreamCopy = GL_STREAM_COPY
+};
+
+struct BufferElement
+{
+	const size_t size;
+	const std::string name;
+	const GLint location;
+	const bool normalized;
+
+	BufferElement(size_t size, const std::string& name = "", GLuint location = -1, bool normalized = false)
+		: size(size)
+		, name(name)
+		, location(location)
+		, normalized(normalized)
+	{
+	}
+
+	BufferElement(const BufferElement& other) = default;
+
+	BufferElement& operator=(const BufferElement& other)
+	{
+		return *new (this) BufferElement(other);
+	}
+};
 
 template<typename T>
 class Buffer
 {
-public:
-	enum class Type
+	void applyElements(const std::vector<BufferElement>& elements)
 	{
-		Vertex = GL_ARRAY_BUFFER,
-		Index = GL_ELEMENT_ARRAY_BUFFER
-	};
-
-	struct Element
-	{
-		const size_t size;
-		const std::string name;
-
-		Element(size_t size, const std::string& name = "")
-			: size(size)
-			, name(name)
-		{
-		}
-	};
-
-	Buffer(Type bufferType, const std::vector<Element>& elements)
-		: m_TypeSize(sizeof(T))
-		, m_BufferType(type)
-	{
-		m_ElementSize = 0;
 		for (const auto& e : elements)
 		{
-			m_Elements.emplace_back(amount, name);
-			m_ElementSize += amount * m_TypeSize
+			m_Elements.emplace_back(e.size, e.name, e.location, e.normalized);
+			m_ElementSize += e.size * m_TypeSize;
 		}
 
-		GLenum type = getType(bufferType);
+		// If this is a IndexBuffer, skip the attribute setup
+		if (m_BufferType == static_cast<GLenum>(BufferType::Index))
+			return;
+
+		size_t offset = 0;
+		for (const auto& e : elements)
+		{
+			offset += e.size * m_TypeSize;
+
+			if (e.location > -1)
+			{
+				glEnableVertexAttribArray(e.location);
+				glVertexAttribPointer(e.location, e.size,
+					GL::Scalar<T>(), GL::Bool(e.normalized),
+					m_ElementSize, (void*)offset);
+			}
+		}
+	}
+public:
+	Buffer(BufferType bufferType, BufferUsage bufferUsage, const std::vector<BufferElement>& elements)
+		: m_BufferType(static_cast<GLenum>(bufferType))
+		, m_BufferUsage(static_cast<GLenum>(bufferUsage))
+		, m_TypeSize(sizeof(T))
+		, m_ElementSize(0)
+	{
 		glGenBuffers(1, &m_BufferId);
-		glBindBuffer(type, m_BufferId);
-		glBufferData(type, 0, nullptr, GL_DYNAMIC_DRAW);
-		glBindBuffer(type, 0);
+		glBindBuffer(m_BufferType, m_BufferId);
+		applyElements(elements);
+		glBufferData(m_BufferType, 0, nullptr, m_BufferUsage);
+		glBindBuffer(m_BufferType, 0);
 	}
 
-	Buffer(Type bufferType, const std::vector<Element>& elements, const std::vector<T>& values)
-		: m_TypeSize(sizeof(T))
-		, m_BufferType(type)
+	Buffer(BufferType bufferType, BufferUsage bufferUsage, const std::vector<BufferElement>& elements, const std::vector<T>& values)
+		: m_BufferType(static_cast<GLenum>(bufferType))
+		, m_BufferUsage(static_cast<GLenum>(bufferUsage))
+		, m_TypeSize(sizeof(T))
+		, m_ElementSize(0)
 	{
-		m_ElementSize = 0;
-		for (const auto& e : elements)
-		{
-			m_Elements.emplace_back(amount, name);
-			m_ElementSize += amount * m_TypeSize
-		}
-
-		GLenum type = getType(bufferType);
 		glGenBuffers(1, &m_BufferId);
-		glBindBuffer(type, m_BufferId);
-		glBufferData(type, values.size() / m_ESize, values.data(), GL_DYNAMIC_DRAW);
-		glBindBuffer(type, 0);
+		glBindBuffer(m_BufferType, m_BufferId);
+		applyElements(elements);
+		glBufferData(m_BufferType, values.size() / m_ElementSize, values.data(), m_BufferUsage);
+		glBindBuffer(m_BufferType, 0);
 	}
 
 	~Buffer()
@@ -69,55 +112,25 @@ public:
 		glDeleteBuffers(1, &m_BufferId);
 	}
 
-	void setData(const std::vector<T>& values)
+	void setData(const std::vector<T>& values) const
 	{
-		glBindBuffer(type, m_BufferId);
-		glBufferSubData(type, values.size() / m_ESize, values.data(), GL_DYNAMIC_DRAW);
-		glBindBuffer(type, 0);
+		glBindBuffer(m_BufferType, m_BufferId);
+		glBufferSubData(m_BufferType, 0, values.size() / m_ElementSize, values.data());
+		glBindBuffer(m_BufferType, 0);
 	}
 
 	void getId() const
 	{
 		return m_BufferId;
 	}
-
-	const std::string& getElementName(size_t index) const
-	{
-		return m_Elements[index];
-	}
 private:
-	const Type m_Type;
+	const GLenum m_BufferType;
+	const GLenum m_BufferUsage;
 	const size_t m_TypeSize;
-	const size_t m_ElementSize;
 
 	GLuint m_BufferId;
-	std::vector<Element> m_Elements;
+	size_t m_ElementSize;
+	std::vector<BufferElement> m_Elements;
 };
-
-/*
-	- EXAMPLE -
-
-	Buffer<GLfloat> QuadVertices(BufferType::Vertex,
-	{
-		BufferElement(3, "Position"),
-		BufferElement(4, "Color"),
-		BufferElement(2, "UV")
-	},
-	{
-		-0.5f, -0.5f,  0.0f,
-		 0.5f, -0.5f,  0.0f,
-		-0.5f,  0.5f,  0.0f,
-		 0.5f,  0.5f,  0.0f
-	});
-
-	Buffer<GLuint> QuadIndices(BufferType::Index,
-	{
-		BufferElement(1)
-	},
-	{
-		0, 2, 3,
-		3, 1, 0 
-	});
-*/
 
 #endif // Include guard

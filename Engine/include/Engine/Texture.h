@@ -12,18 +12,21 @@ class Texture final
 
 public:
 	Texture() = default;
-
 	~Texture();
 
 	bool fromMemory(const std::vector<char>& png);
-	
 	bool fromFile(const std::string& filepath);
 
 	void setSmooth(bool b);
 
+	void bind(GLuint unit);
+	void unbind();
+
+	GLuint getUnit() const;
 	GLuint getId() const;
 private:
-	GLuint m_TextureId = 0;
+	GLuint m_Unit = -1;
+	GLuint m_Id = -1;
 };
 
 #endif // Include guard
