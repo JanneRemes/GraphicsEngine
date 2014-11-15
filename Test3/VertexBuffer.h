@@ -98,11 +98,6 @@ public:
 		m_Buffer.assign(vertices.begin(), vertices.end());
 	}
 
-	~VertexBuffer()
-	{
-		glDeleteBuffers(1, &m_BufferId);
-	};
-
 	const VertexFormat& getFormat() const
 	{
 		return m_Format;

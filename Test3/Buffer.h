@@ -22,7 +22,10 @@ public:
 		glBindBuffer(Target, 0);
 	}
 
-	virtual ~Buffer() = 0 {}
+	virtual ~Buffer()
+	{
+		glDeleteBuffers(1, &m_BufferId);
+	};
 
 	void update()
 	{

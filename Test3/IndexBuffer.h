@@ -19,11 +19,6 @@ public:
 	{
 		m_Buffer.assign(indices.begin(), indices.end());
 	}
-
-	~IndexBuffer()
-	{
-		glDeleteBuffers(1, &m_BufferId);
-	};
 };
 
 #endif // Include guard
