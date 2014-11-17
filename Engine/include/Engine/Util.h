@@ -23,6 +23,66 @@ enum class Severity
 class Util
 {
 public:
+	/*
+		StringTo<T>
+	*/
+	template<typename T>
+	static bool StringTo(const std::string& str, T& out)
+	{
+		static_assert(false, "Error: Unsupported conversion. Allowed types are: int, long, ulong, llong, float, double, ldouble.");
+	}
+
+	template<>
+	static bool StringTo<int>(const std::string& str, int& out)
+	{
+		try { out = std::stoi(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<long>(const std::string& str, long& out)
+	{
+		try { out = std::stol(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<unsigned long>(const std::string& str, unsigned long& out)
+	{
+		try { out = std::stoul(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<long long>(const std::string& str, long long& out)
+	{
+		try { out = std::stoll(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<float>(const std::string& str, float& out)
+	{
+		try { out = std::stof(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<double>(const std::string& str, double& out)
+	{
+		try { out = std::stod(str); return true; }
+		catch (...) { return false; }
+	}
+
+	template<>
+	static bool StringTo<long double>(const std::string& str, long double& out)
+	{
+		try { out = std::stold(str); return true; }
+		catch (...) { return false; }
+	}
+	// ----- ----- -----
+
+
 	template<typename T>
 	static size_t GetTypeId()
 	{
