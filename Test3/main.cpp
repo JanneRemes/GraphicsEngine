@@ -4,7 +4,6 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Engine/MeshLoader.h>
 #include <Engine/Util.h>
 
 int main()
@@ -16,60 +15,60 @@ int main()
 
 	/**/
 	VertexBuffer vertices(VertexFormat::Position3f_Color4f_UV2f);
+		{
+		vertices.append(
+		{
+			-0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
+			-0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
+			 0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
+		});
 
-	vertices.append(
-	{
-		/**/ -0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
-		/**/ -0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
-		/**/  0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
-		/**/  0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
-	});
+		vertices.append(
+		{
+			 0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
+			 0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
+			 1.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
+			 1.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
+		});
 
-	vertices.append(
-	{
-		/**/  0.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
-		/**/  0.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
-		/**/  1.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
-		/**/  1.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
-	});
-
-	vertices.append(
-	{
-		/**/  1.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
-		/**/  1.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
-		/**/  2.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
-		/**/  2.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
-	});
+		vertices.append(
+		{
+			 1.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  1.0f,
+			 1.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  1.0f,  0.0f,
+			 2.5f,  0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  0.0f,
+			 2.5f, -0.5f,  0.0f, /**/  1.0f,  1.0f,  1.0f,  1.0f, /**/  0.0f,  1.0f,
+		});
+	}
 
 	IndexBuffer indices;
-
-	indices.append(
 	{
-		0, 1, 2,
-		2, 3, 0,
-	});
+		indices.append(
+		{
+			0, 1, 2,
+			2, 3, 0,
+		});
 
-	indices.append(
-	{
-		4, 5, 6,
-		6, 7, 4,
-	});
+		indices.append(
+		{
+			4, 5, 6,
+			6, 7, 4,
+		});
 
-	indices.append(
-	{
-		 8,  9, 10,
-		10, 11,  8,
-	});
+		indices.append(
+		{
+			8, 9, 10,
+			10, 11, 8,
+		});
+	}
 	/**/
 
 	Shader shader;
 	shader.fromFile("default.vert", "default.frag");
 	GLuint program = shader.getProgram();
 
-	shader.bind();
-		Texture texture;
-		texture.fromFile("test.png");
-	shader.unbind();
+	Texture texture;
+	texture.fromFile("test.png");
 
 	GLuint positionIndex = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(positionIndex);
@@ -97,6 +96,10 @@ int main()
 
 		const GLint texIndex = glGetUniformLocation(program, "Tex");
 		glUniform1i(texIndex, 0);
+
+		glVertexAttribPointer(positionIndex, 3, GL_FLOAT, GL_FALSE, vertices.Size, vertices.getData() + 0);
+		glVertexAttribPointer(colorIndex,    4, GL_FLOAT, GL_FALSE, vertices.Size, vertices.getData() + 3);
+		glVertexAttribPointer(texCoordIndex, 2, GL_FLOAT, GL_FALSE, vertices.Size, vertices.getData() + 7);
 	}
 	shader.unbind();
 
@@ -112,12 +115,10 @@ int main()
 		{
 			shader.bind();
 			{
-				glVertexAttribPointer(positionIndex, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), vertices.getData());
-				glVertexAttribPointer(colorIndex,    4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), vertices.getData() + 3);
-				glVertexAttribPointer(texCoordIndex, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), vertices.getData() + 7);
-
 				texture.bind(0);
+				{
 					glDrawElements(GL_TRIANGLES, indices.getSize(), GL_UNSIGNED_INT, indices.getData());
+				}
 				texture.unbind();
 			}
 			shader.unbind();

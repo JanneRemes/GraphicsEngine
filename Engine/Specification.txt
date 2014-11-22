@@ -13,10 +13,10 @@ Features			 : {
 		[x] Upload to VRAM
 	[x] Texture class
 		[x] Load from file (.png)
-	[ ] Shader class
+	[-] Shader class
 		[x] Load from file (.vert, .frag)
-	[ ] Mesh class
-		[ ] Load from file (.obj)
+	[-] Mesh class
+		[x] Load from file (.obj)
 		[ ] Support for textures
 		[ ] Simple drawing
 	[ ] Sprite class

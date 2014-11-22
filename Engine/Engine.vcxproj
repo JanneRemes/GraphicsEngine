@@ -20,7 +20,6 @@
     <ClInclude Include="include\Engine\GLUtil.h" />
     <ClInclude Include="include\Engine\IndexBuffer.h" />
     <ClInclude Include="include\Engine\Mesh.h" />
-    <ClInclude Include="include\Engine\MeshLoader.h" />
     <ClInclude Include="include\Engine\Shader.h" />
     <ClInclude Include="include\Engine\Texture.h" />
     <ClInclude Include="include\Engine\Util.h" />

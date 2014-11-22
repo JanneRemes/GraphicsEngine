@@ -15,6 +15,9 @@ public:
 	Mesh(const VertexFormat& format, const std::string& filepath);
 	
 	bool fromFile(const std::string& filepath);
+
+	const VertexBuffer& getVertices() const;
+	const IndexBuffer& getIndices() const;
 private:
 	VertexBuffer m_Vertices;
 	IndexBuffer m_Indices;

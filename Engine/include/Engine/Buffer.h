@@ -13,6 +13,7 @@ public:
 	virtual ~Buffer();
 
 	void update();
+	void reserve(size_t newSize);
 	void append(const std::vector<T>& data);
 	void clear();
 
@@ -55,6 +56,12 @@ void Buffer<T>::update()
 	glBindBuffer(Target, m_BufferId);
 	glBufferSubData(Target, 0, m_Buffer.size(), m_Buffer.data());
 	glBindBuffer(Target, 0);
+}
+
+template<typename T>
+void Buffer<T>::reserve(size_t newSize)
+{
+	m_Buffer.reserve(newSize);
 }
 
 template<typename T>
