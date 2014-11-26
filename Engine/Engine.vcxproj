@@ -13,8 +13,9 @@
   <ItemGroup>
     <ClInclude Include="include\Engine\Context.h" />
     <ClInclude Include="include\Engine\Graphics.h" />
+    <ClInclude Include="include\Engine\Math.h" />
     <ClInclude Include="include\Engine\Shader.h" />
-    <ClInclude Include="include\Engine\SpriteBatch.h" />
+    <ClInclude Include="include\Engine\Texture.h" />
     <ClInclude Include="include\Engine\Util.h" />
     <ClInclude Include="include\Engine\Window.h" />
   </ItemGroup>
@@ -22,6 +23,7 @@
     <ClCompile Include="source\Context.cpp" />
     <ClCompile Include="source\Graphics.cpp" />
     <ClCompile Include="source\Shader.cpp" />
+    <ClCompile Include="source\Texture.cpp" />
     <ClCompile Include="source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>

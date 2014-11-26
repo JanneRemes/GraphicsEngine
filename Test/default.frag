@@ -1,12 +1,13 @@
 
 #version 150 core
 
-uniform float Alpha;
+uniform sampler2D Texture;
 
-in vec3 FragColor;
+in vec4 FragColor;
+in vec2 FragUV;
 out vec4 FinalColor;
 
 void main()
 {
-	FinalColor = vec4(FragColor, Alpha);
+	FinalColor = FragColor * texture(Texture, FragUV);
 }

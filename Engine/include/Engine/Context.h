@@ -2,6 +2,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include <Engine/Graphics.h>
 #include <Engine/Window.h>
 #include <glew/glew.h>
 

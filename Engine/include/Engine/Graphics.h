@@ -9,7 +9,7 @@
 
 struct VertexAttribute
 {
-	unsigned int Location;
+	int Location;
 	unsigned int Size;
 	char* Name;	
 };

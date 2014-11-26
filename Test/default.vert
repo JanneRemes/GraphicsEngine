@@ -1,17 +1,16 @@
 
 #version 150 core
 
-uniform mat4 World;
-uniform mat4 View;
-uniform mat4 Projection;
-
 in vec3 Position;
-in vec3 Color;
+in vec4 Color;
+in vec2 UV;
 
-out vec3 FragColor;
+out vec2 FragUV;
+out vec4 FragColor;
 
 void main()
 {
+	FragUV = UV;
 	FragColor = Color;
-	gl_Position = Projection * View * World * vec4(Position, 1.0);
+	gl_Position = vec4(Position, 1.0);
 }
