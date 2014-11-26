@@ -14,8 +14,6 @@ public:
 	static const std::string DefaultVertex;
 	static const std::string DefaultFragment;
 
-	static bool IsBound(GLuint program);
-
 	Shader() = default;
 	Shader(const Shader& other) = default;
 	~Shader();

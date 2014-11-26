@@ -11,33 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Engine\Buffer.h" />
     <ClInclude Include="include\Engine\Context.h" />
-    <ClInclude Include="include\Engine\ContextSettings.h" />
-    <ClInclude Include="include\Engine\Engine.h" />
-    <ClInclude Include="include\Engine\Event.h" />
-    <ClInclude Include="include\Engine\FileManager.h" />
-    <ClInclude Include="include\Engine\GLUtil.h" />
-    <ClInclude Include="include\Engine\IndexBuffer.h" />
-    <ClInclude Include="include\Engine\Mesh.h" />
+    <ClInclude Include="include\Engine\Graphics.h" />
     <ClInclude Include="include\Engine\Shader.h" />
-    <ClInclude Include="include\Engine\Texture.h" />
+    <ClInclude Include="include\Engine\SpriteBatch.h" />
     <ClInclude Include="include\Engine\Util.h" />
-    <ClInclude Include="include\Engine\VertexBuffer.h" />
-    <ClInclude Include="include\Engine\VertexFormat.h" />
-    <ClInclude Include="include\Engine\VertexInfo.h" />
     <ClInclude Include="include\Engine\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Context.cpp" />
-    <ClCompile Include="source\FileManager.cpp" />
-    <ClCompile Include="source\IndexBuffer.cpp" />
-    <ClCompile Include="source\Mesh.cpp" />
+    <ClCompile Include="source\Graphics.cpp" />
     <ClCompile Include="source\Shader.cpp" />
-    <ClCompile Include="source\Texture.cpp" />
-    <ClCompile Include="source\VertexBuffer.cpp" />
-    <ClCompile Include="source\VertexFormat.cpp" />
-    <ClCompile Include="source\VertexInfo.cpp" />
     <ClCompile Include="source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>

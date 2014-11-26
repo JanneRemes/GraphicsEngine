@@ -4,6 +4,7 @@
 
 #include <Engine/Shader.h>
 #include <Engine/Util.h>
+#include <Engine/Graphics.h>
 
 #ifdef GLSL
 #error 'GLSL' already defined
@@ -12,27 +13,28 @@
 
 const std::string Shader::DefaultVertex = GLSL
 (
-	uniform mat4 u_ModelViewProjection;
-	in      vec3 i_Position;
-	in      vec4 i_Color;
-	in      vec4 i_UV;
-	out     vec4 o_Color;
+	uniform mat4 ModelViewProjection;
+	in      vec3 Position;
+	in      vec4 Color;
+	in      vec3 Normal;
+	in      vec4 UV;
+	out     vec4 FragColor;
 
 	void main()
 	{
-		o_Color = i_Color;
-		gl_Position = u_ModelViewProjection * vec4(i_Position, 1.0);
+		FragColor = Color;
+		gl_Position = ModelViewProjection * vec4(Position, 1.0);
 	}
 );
 
 const std::string Shader::DefaultFragment = GLSL
 (
-	in  vec4 i_Color;
-	out vec4 o_Color;
+	in  vec4 FragColor;
+	out vec4 FinalColor;
 
 	void main()
 	{
-		o_Color = i_Color;
+		FinalColor = FragColor;
 	}
 );
 
@@ -74,13 +76,6 @@ bool Shader::validateProgram(GLuint program)
 	}
 
 	return true;
-}
-
-bool Shader::IsBound(GLuint program)
-{
-	GLint data;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &data);
-	return data == program;
 }
 
 /*
@@ -141,6 +136,10 @@ bool Shader::init(const char* vertexSource, const char* fragmentSource)
 	m_Program = glCreateProgram();
 	glAttachShader(m_Program, m_VertexShader);
 	glAttachShader(m_Program, m_FragmentShader);
+	glBindAttribLocation(m_Program, Graphics::Position.Location, Graphics::Position.Name);
+	glBindAttribLocation(m_Program, Graphics::Color.Location,    Graphics::Color.Name);
+	glBindAttribLocation(m_Program, Graphics::Normal.Location,   Graphics::Normal.Name);
+	glBindAttribLocation(m_Program, Graphics::UV.Location,       Graphics::UV.Name);
 	glLinkProgram(m_Program);
 	if (!validateProgram(m_Program))
 	{
