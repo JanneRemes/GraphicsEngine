@@ -5,6 +5,7 @@
 #include <Engine/Shader.h>
 #include <Engine/Util.h>
 #include <Engine/Graphics.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #ifdef GLSL
 #error 'GLSL' already defined
@@ -44,38 +45,38 @@ const std::string Shader::DefaultFragment = GLSL
 /*
 	PRIVATE
 */
-bool Shader::validateShader(GLuint shader)
+bool Shader::getCompileStatus(GLuint shader)
 {
-	GLint logLength;
-	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-
-	if (logLength > 1)
-	{
-		std::vector<GLchar> log(logLength);
-		glGetShaderInfoLog(shader, logLength, nullptr, log.data());
-		std::cerr << log.data();
-
-		return false;
-	}
-
-	return true;
+	GLint result = 0;
+	gl::GetShaderiv(shader, gl::COMPILE_STATUS, &result);
+	return result == gl::TRUE_;
 }
 
-bool Shader::validateProgram(GLuint program)
+bool Shader::getLinkStatus(GLuint program)
+{
+	GLint result = 0;
+	gl::GetProgramiv(program, gl::LINK_STATUS, &result);
+	return result == gl::TRUE_;
+}
+
+std::string Shader::getShaderInfoLog(GLuint shader)
 {
 	GLint logLength;
-	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+	gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &logLength);
 
-	if (logLength > 1)
-	{
-		std::vector<GLchar> log(logLength);
-		glGetProgramInfoLog(program, logLength, nullptr, log.data());
-		std::cerr << log.data();
+	std::vector<GLchar> log(logLength);
+	gl::GetShaderInfoLog(shader, logLength, nullptr, log.data());
+	return std::string(log.begin(), log.end());
+}
 
-		return false;
-	}
+std::string Shader::getProgramInfoLog(GLuint program)
+{
+	GLint logLength;
+	gl::GetShaderiv(program, gl::INFO_LOG_LENGTH, &logLength);
 
-	return true;
+	std::vector<GLchar> log(logLength);
+	gl::GetProgramInfoLog(program, logLength, nullptr, log.data());
+	return std::string(log.begin(), log.end());
 }
 
 /*
@@ -83,11 +84,7 @@ bool Shader::validateProgram(GLuint program)
 */
 Shader::~Shader()
 {
-	glDetachShader(m_Program, m_FragmentShader);
-	glDetachShader(m_Program, m_VertexShader);
-	glDeleteShader(m_FragmentShader);
-	glDeleteShader(m_VertexShader);
-	glDeleteProgram(m_Program);
+	deinit();
 }
 
 bool Shader::fromFile(const std::string& vertexPath, const std::string& fragmentPath)
@@ -111,38 +108,43 @@ bool Shader::fromSource(const std::string& vertexSource, const std::string& frag
 
 bool Shader::init(const char* vertexSource, const char* fragmentSource)
 {
-	if (m_IsInitialized)
+	if (m_Program != 0)
 	{
-		std::cerr << "Error: Attempted to initialize Shader twice! Create new a shader instead.\n";
+		deinit();
+	}
+
+	m_VertexShader = gl::CreateShader(gl::VERTEX_SHADER);
+	gl::ShaderSource(m_VertexShader, 1, &vertexSource, nullptr);
+	gl::CompileShader(m_VertexShader);
+	if (!getCompileStatus(m_VertexShader))
+	{
+		std::cerr << getShaderInfoLog(m_VertexShader);
+		deinit();
 		return false;
 	}
 
-	m_VertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(m_VertexShader, 1, &vertexSource, nullptr);
-	glCompileShader(m_VertexShader);
-	if (!validateShader(m_VertexShader))
+	m_FragmentShader = gl::CreateShader(gl::FRAGMENT_SHADER);
+	gl::ShaderSource(m_FragmentShader, 1, &fragmentSource, nullptr);
+	gl::CompileShader(m_FragmentShader);
+	if (!getCompileStatus(m_FragmentShader))
 	{
+		std::cerr << getShaderInfoLog(m_VertexShader);
+		deinit();
 		return false;
 	}
 
-	m_FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(m_FragmentShader, 1, &fragmentSource, nullptr);
-	glCompileShader(m_FragmentShader);
-	if (!validateShader(m_FragmentShader))
+	m_Program = gl::CreateProgram();
+	gl::AttachShader(m_Program, m_VertexShader);
+	gl::AttachShader(m_Program, m_FragmentShader);
+	gl::BindAttribLocation(m_Program, gl::Position.Location, gl::Position.Name);
+	gl::BindAttribLocation(m_Program, gl::Color.Location,    gl::Color.Name);
+	gl::BindAttribLocation(m_Program, gl::Normal.Location,   gl::Normal.Name);
+	gl::BindAttribLocation(m_Program, gl::UV.Location,       gl::UV.Name);
+	gl::LinkProgram(m_Program);
+	if (!getLinkStatus(m_Program))
 	{
-		return false;
-	}
-
-	m_Program = glCreateProgram();
-	glAttachShader(m_Program, m_VertexShader);
-	glAttachShader(m_Program, m_FragmentShader);
-	glBindAttribLocation(m_Program, Graphics::Position.Location, Graphics::Position.Name);
-	glBindAttribLocation(m_Program, Graphics::Color.Location,    Graphics::Color.Name);
-	glBindAttribLocation(m_Program, Graphics::Normal.Location,   Graphics::Normal.Name);
-	glBindAttribLocation(m_Program, Graphics::UV.Location,       Graphics::UV.Name);
-	glLinkProgram(m_Program);
-	if (!validateProgram(m_Program))
-	{
+		std::cerr << getProgramInfoLog(m_VertexShader);
+		deinit();
 		return false;
 	}
 
@@ -150,14 +152,83 @@ bool Shader::init(const char* vertexSource, const char* fragmentSource)
 	return true;
 }
 
-void Shader::bind() const
+void Shader::deinit()
 {
-	glUseProgram(m_Program);
+	gl::DetachShader(m_Program, m_FragmentShader);
+	gl::DetachShader(m_Program, m_VertexShader);
+	gl::DeleteShader(m_FragmentShader);
+	gl::DeleteShader(m_VertexShader);
+	gl::DeleteProgram(m_Program);
+
+	m_FragmentShader = 0;
+	m_VertexShader = 0;
+	m_Program = 0;
 }
 
-void Shader::unbind() const
+void Shader::bind()
 {
-	glUseProgram(0);
+	m_BindCount++;
+	if (m_BindCount == 1)
+	{
+		gl::UseProgram(m_Program);
+	}
+}
+
+void Shader::unbind()
+{
+	m_BindCount--;
+	if (m_BindCount == 0)
+	{
+		gl::UseProgram(0);
+	}
+}
+
+void Shader::unbindImmidiate()
+{
+	m_BindCount = 0;
+	gl::UseProgram(0);
+}
+
+void Shader::setUniform(GLuint location, const glm::mat4& mat, bool transpose)
+{
+	bind();
+	gl::UniformMatrix4fv(location, 1, transpose, glm::value_ptr(mat));
+	unbind();
+}
+
+void Shader::setUniform(GLuint location, const glm::vec4& v)
+{
+	bind();
+	gl::Uniform4fv(location, 1, glm::value_ptr(v));
+	unbind();
+}
+
+void Shader::setUniform(GLuint location, const glm::vec3& v)
+{
+	bind();
+	gl::Uniform3fv(location, 1, glm::value_ptr(v));
+	unbind();
+}
+
+void Shader::setUniform(GLuint location, const glm::vec2& v)
+{
+	bind();
+	gl::Uniform2fv(location, 1, glm::value_ptr(v));
+	unbind();
+}
+
+void Shader::setUniform(GLuint location, GLfloat f)
+{
+	bind();
+	gl::Uniform1f(location, f);
+	unbind();
+}
+
+void Shader::setUniform(GLuint location, GLint i)
+{
+	bind();
+	gl::Uniform1i(location, i);
+	unbind();
 }
 
 GLuint Shader::getProgram() const

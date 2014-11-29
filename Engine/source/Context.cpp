@@ -2,7 +2,6 @@
 #include <Engine/Context.h>
 #include <Engine/Util.h>
 #include <Engine/Graphics.h>
-#include <glew/wglew.h>
 #include <iostream>
 
 HWND Context::hwnd = nullptr;
@@ -27,35 +26,28 @@ bool Context::Init(const Window& wnd)
 	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	int format = GL::ChoosePixelFormat(device, pfd);
+	int format = ChoosePixelFormat(device, &pfd);
 	if (format == 0)
 		return false;
 
-	bool result = GL::SetPixelFormat(device, format, pfd);
+	bool result = SetPixelFormat(device, format, &pfd) == TRUE;
 	if (!result)
 		return false;
 
-	HGLRC render = GL::CreateContext(device);
-	GL::MakeCurrent(device, render);
+	HGLRC render = wglCreateContext(device);
+	wglMakeCurrent(device, render);
 
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		Util::ShowMessage("GLEW is not initialized!");
-		return false;
-	}
-
-	std::fprintf(stdout, "OpenGL Version: %s\n", glGetString(GL_VERSION));
+	std::fprintf(stdout, "OpenGL Version: %s\n", gl::GetString(gl::VERSION));
 
 	if (!render)
 		return false;
 	return true;
 }
 
-void Context::Clear(const glm::vec4& color, unsigned int bits)
+void Context::Clear(const glm::vec4& color, GLbitfield mask)
 {
-	GL::ClearColor(color);
-	GL::Clear(bits);
+	gl::ClearColor(color.r, color.g, color.b, color.a);
+	gl::Clear(mask);
 }
 
 void Context::Swap()

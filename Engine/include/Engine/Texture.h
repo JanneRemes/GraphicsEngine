@@ -2,8 +2,9 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <glew/glew.h>
+#include <wgl_core_2_1/wgl.h>
 #include <lodepng/lodepng.h>
+#include <glm/glm.hpp>
 #include <vector>
 
 class Texture final
@@ -19,14 +20,15 @@ public:
 
 	void setSmooth(bool b);
 
-	void bind(GLuint unit);
+	void bind();
 	void unbind();
 
-	GLuint getUnit() const;
+	const glm::uvec2& getSize() const;
+
 	GLuint getId() const;
 private:
-	GLuint m_Unit = -1;
-	GLuint m_Id = -1;
+	glm::uvec2 m_Size;
+	GLuint m_Id = 0;
 };
 
 #endif // Include guard

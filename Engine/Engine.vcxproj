@@ -13,10 +13,14 @@
   <ItemGroup>
     <ClInclude Include="include\Engine\Context.h" />
     <ClInclude Include="include\Engine\Graphics.h" />
+    <ClInclude Include="include\Engine\IndexBuffer.h" />
     <ClInclude Include="include\Engine\Math.h" />
     <ClInclude Include="include\Engine\Shader.h" />
+    <ClInclude Include="include\Engine\SpriteBatch.h" />
     <ClInclude Include="include\Engine\Texture.h" />
     <ClInclude Include="include\Engine\Util.h" />
+    <ClInclude Include="include\Engine\Buffer.h" />
+    <ClInclude Include="include\Engine\VertexBuffer.h" />
     <ClInclude Include="include\Engine\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -78,8 +82,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)ext\lib\glew\$(Configuration)\$(Platform)\;$(SolutionDir)ext\lib\lodepng\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;lodepng.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ext\lib\lodepng\$(Configuration)\$(Platform)\;$(SolutionDir)ext\lib\wgL_core_2_1\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;wgl_core_2_1.lib;lodepng.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -99,8 +103,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)ext\lib\glew\$(Configuration)\$(Platform)\;$(SolutionDir)ext\lib\lodepng\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;lodepng.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ext\lib\lodepng\$(Configuration)\$(Platform)\;$(SolutionDir)ext\lib\wgL_core_2_1\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;wgl_core_2_1.lib;lodepng.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

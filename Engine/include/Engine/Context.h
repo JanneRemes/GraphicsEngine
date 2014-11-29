@@ -2,9 +2,9 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include <wgl_core_2_1/wgl.h>
 #include <Engine/Graphics.h>
 #include <Engine/Window.h>
-#include <glew/glew.h>
 
 class Context
 {
@@ -13,7 +13,7 @@ class Context
 	static HGLRC render;
 public:
 	static bool Init(const Window& wnd);
-	static void Clear(const glm::vec4& color, unsigned int flags = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	static void Clear(const glm::vec4& color, unsigned int flags = gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT | gl::STENCIL_BUFFER_BIT);
 	static void Swap();
 };
 

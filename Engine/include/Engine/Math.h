@@ -40,28 +40,6 @@ struct Math
 			vec.x * sin + vec.y * cos
 		};
 	}
-
-	static void Rotate(glm::vec2& vec, float deg)
-	{
-		const float rad = ToRadians(-deg);
-		const float sin = std::sinf(rad);
-		const float cos = std::cosf(rad);
-		const float x2 = vec.x * cos - vec.y * sin;
-		const float y2 = vec.x * sin + vec.y * cos;
-		vec.x = x2;
-		vec.y = y2;
-	}
-
-	static void Rotate(float& x, float& y, float deg)
-	{
-		const float rad = ToRadians(-deg);
-		const float sin = std::sinf(rad);
-		const float cos = std::cosf(rad);
-		const float x2 = x * cos - y * sin;
-		const float y2 = x * sin + y * cos;
-		x = x2;
-		y = y2;
-	}
 };
 
 #endif // Include guard
