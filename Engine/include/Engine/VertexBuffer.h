@@ -35,9 +35,14 @@ public:
 		gl::EnableVertexAttribArray(gl::Color.Location);
 		gl::EnableVertexAttribArray(gl::UV.Location);
 
-		gl::VertexAttribPointer(gl::Position.Location, gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0));
-		gl::VertexAttribPointer(gl::Color.Location,    gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0 + gl::Position.ByteSize));
-		gl::VertexAttribPointer(gl::UV.Location,       gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0 + gl::Position.ByteSize + gl::Color.ByteSize));
+		gl::VertexAttribPointer(gl::Position.Location, gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), (void*)(0));
+		gl::VertexAttribPointer(gl::Normal.Location,   gl::Normal.Size,   gl::FLOAT, false, sizeof(Vertex), (void*)(0 + gl::Position.ByteSize));
+		gl::VertexAttribPointer(gl::Color.Location,    gl::Color.Size,    gl::FLOAT, false, sizeof(Vertex), (void*)(0 + gl::Position.ByteSize + gl::Normal.ByteSize));
+		gl::VertexAttribPointer(gl::UV.Location,       gl::UV.Size,       gl::FLOAT, false, sizeof(Vertex), (void*)(0 + gl::Position.ByteSize + gl::Normal.ByteSize + gl::Color.ByteSize));
+
+		//gl::VertexAttribPointer(gl::Position.Location, gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0));
+		//gl::VertexAttribPointer(gl::Color.Location,    gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0 + gl::Position.ByteSize));
+		//gl::VertexAttribPointer(gl::UV.Location,       gl::Position.Size, gl::FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0 + gl::Position.ByteSize + gl::Color.ByteSize));
 	}
 };
 

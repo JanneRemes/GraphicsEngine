@@ -8,12 +8,12 @@ class IndexBuffer : public Buffer<GLuint>
 {
 public:
 	IndexBuffer()
-		: Buffer(gl::ARRAY_BUFFER, gl::DYNAMIC_DRAW)
+		: Buffer(gl::ELEMENT_ARRAY_BUFFER, gl::DYNAMIC_DRAW)
 	{
 	}
 
 	IndexBuffer(const std::vector<GLuint>& data)
-		: Buffer(gl::ARRAY_BUFFER, data, gl::DYNAMIC_DRAW)
+		: Buffer(gl::ELEMENT_ARRAY_BUFFER, data, gl::DYNAMIC_DRAW)
 	{
 	}
 };

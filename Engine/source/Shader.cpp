@@ -189,6 +189,11 @@ void Shader::unbindImmidiate()
 	gl::UseProgram(0);
 }
 
+GLint Shader::getUniformLocation(const std::string& name) const
+{
+	return gl::GetUniformLocation(m_Program, name.c_str());
+}
+
 void Shader::setUniform(GLuint location, const glm::mat4& mat, bool transpose)
 {
 	bind();

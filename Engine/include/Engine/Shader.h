@@ -31,6 +31,7 @@ public:
 	void unbind();
 	void unbindImmidiate();
 
+	GLint getUniformLocation(const std::string& name) const;
 	void setUniform(GLuint location, const glm::mat4& mat, bool transpose);
 	void setUniform(GLuint location, const glm::vec4& v);
 	void setUniform(GLuint location, const glm::vec3& v);

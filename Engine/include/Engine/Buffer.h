@@ -20,10 +20,12 @@ public:
 	}
 
 	Buffer(GLenum target, const std::vector<T>& data, GLenum usage)
+		: m_Target(target)
+		, m_Usage(usage)
 	{
 		gl::GenBuffers(1, &m_Id);
 		gl::BindBuffer(m_Target, m_Id);
-		gl::BufferData(m_Target, data.size(), data.data(), m_Usage);
+		gl::BufferData(m_Target, data.size() * sizeof(T), data.data(), m_Usage);
 		gl::BindBuffer(m_Target, 0);
 		m_Size = data.size();
 	}
@@ -36,17 +38,15 @@ public:
 	void setData(const std::vector<T>& data)
 	{
 		gl::BindBuffer(m_Target, m_Id);
-		gl::BufferData(m_Target, data.size(), data.data(), m_Usage);
+		gl::BufferData(m_Target, data.size() * sizeof(T), data.data(), m_Usage);
 		gl::BindBuffer(m_Target, 0);
 		m_Size = data.size();
 	}
 
 	void setData(size_t offset, const std::vector<T>& data)
 	{
-		const GLintptr byteOffset = offset * sizeof(T);
-
 		gl::BindBuffer(m_Target, m_Id);
-		gl::BufferSubData(m_Target, byteOffset, data.size(), data.data());
+		gl::BufferSubData(m_Target, offset * sizeof(T), data.size() * sizeof(T), data.data());
 		gl::BindBuffer(m_Target, 0);
 	}
 

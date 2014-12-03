@@ -3,95 +3,151 @@
 #include <Engine/Context.h>
 #include <Engine/Shader.h>
 #include <Engine/Texture.h>
+//#include <Engine/SpriteBatch.h>
 #include <glm/glm.hpp>
 #include <Engine/Math.h>
+#include <array>
+
+/**
+#include <Engine/VertexBuffer.h>
+#include <Engine/IndexBuffer.h>
 
 class Sprite
 {
 public:
-	glm::vec2 Position;
-	glm::vec4 Color;
-	glm::vec4 UV;
+	void setPosition(const glm::vec3& position)
+	{
+		m_Position = position;
+	}
+
+	void setPosition()
+	{
+
+	}
+
+	void setPosition()
+	{
+
+	}
+
+	void setPosition()
+	{
+
+	}
+
+	void draw(Shader& shader)
+	{
+		m_Vertices.bind();
+		m_Indices.bind();
+		shader.bind();
+
+		if (m_Texture != nullptr)
+			m_Texture->bind();
+
+		gl::DrawElements(gl::TRIANGLES, m_Indices.getSize(), gl::UNSIGNED_INT, 0);
+
+		if (m_Texture != nullptr)
+			m_Texture->unbind();
+
+		shader.unbind();
+		m_Indices.unbind();
+		m_Vertices.unbind();
+	}
+private:
+	void update()
+	{
+		m_HasChanged = false;
+
+
+	}
+
+	glm::vec3 Position;
 	glm::vec2 Size;
 	float Rotation;
-	float Z;
-	Texture* TexturePtr;
+	glm::vec4 Color;
+	glm::vec4 UV;
 
-	std::vector<float> GetVertices() const
-	{
-		const glm::vec2 position = Math::Rotate(const_cast<const glm::vec2&>(Position), Rotation);
-		const glm::vec2 size = Math::Rotate(const_cast<const glm::vec2&>(Size), Rotation);
-
-		return
-		{
-			// Bottom left
-			position.x, position.y, Z,
-			Color.r, Color.g, Color.b, Color.a,
-			UV.x, UV.y,
-
-			// Top left
-			position.x, position.y + size.y, Z,
-			Color.r, Color.g, Color.b, Color.a,
-			UV.x, UV.w,
-
-			// Top right
-			position.x + size.x, position.y + size.y, Z,
-			Color.r, Color.g, Color.b, Color.a,
-			UV.z, UV.w,
-
-			// Bottom right
-			position.x + size.x, position.y, Z,
-			Color.r, Color.g, Color.b, Color.a,
-			UV.z, UV.y,
-		};
-	}
+	bool m_HasChanged = true;
+	Texture* m_Texture = nullptr;
+	VertexBuffer m_Vertices;
+	IndexBuffer m_Indices;
 };
+/**/
+
+#include <Engine/Sprite.h>
+#include <chrono>
+
+int FindSquare(int start, int maxOffset = -1)
+{
+	int offset = 0;
+
+	while (true)
+	{
+		if ((start + offset > 0))
+		{
+			const double square = sqrt(start + offset);
+
+			if ((double)(square) - (int)(square) == 0.0)
+				return start + offset;
+		}
+
+		if ((start - offset > 0))
+		{
+			double square = sqrt(start - offset);
+
+			if ((double)(square) - (int)(square) == 0.0)
+				return start - offset;
+		}
+
+		if ((maxOffset == -1) || (offset > maxOffset))
+			offset++;
+	}
+}
+
+int GetTimeDiff()
+{
+	typedef std::chrono::high_resolution_clock Time;
+	typedef std::chrono::microseconds us;
+	typedef std::chrono::milliseconds ms;
+	typedef std::chrono::duration<float> fsec;
+	
+	static auto before = Time::now();
+
+	auto now = Time::now();
+	auto delta = std::chrono::duration_cast<ms>(now - before);
+	before = now;
+
+	return (int)delta.count();
+}
 
 int main()
 {
 	Window wnd({ 800, 600 }, "Title");
 	Context::Init(wnd);
 
-	std::vector<float> vertices
-	{
-		-0.5f, -0.5f, /**/ 1.0f, 0.0f, 0.0f, /**/ 0.0f, 1.0f,
-		-0.5f,  0.5f, /**/ 0.0f, 1.0f, 0.0f, /**/ 0.0f, 0.0f,
-		 0.5f,  0.5f, /**/ 0.0f, 0.0f, 1.0f, /**/ 1.0f, 0.0f,
-		 0.5f, -0.5f, /**/ 1.0f, 1.0f, 0.0f, /**/ 1.0f, 1.0f,
-	};
+	/**
 
-	std::vector<unsigned int> indices
+	VertexBuffer vertices(
 	{
+		{ { -0.5f, -0.5f,  0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
+		{ { -0.5f,  0.5f,  0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
+		{ {  0.5f,  0.5f,  0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } },
+		{ {  0.5f, -0.5f,  0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }, { 1.0f, 1.0f } },
+	});
+
+	IndexBuffer indices
+	({
 		0, 1, 2,
 		2, 3, 0,
-	};
+	});
 
-	// Create a Vertex Buffer Object and copy the vertex data to it
-	GLuint vbo;
-	gl::GenBuffers(1, &vbo);
-
-	// Create an element array
-	GLuint ebo;
-	gl::GenBuffers(1, &ebo);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-	gl::BufferData(gl::ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), gl::DYNAMIC_DRAW);
-	gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
-	gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), gl::DYNAMIC_DRAW);
-
-	gl::EnableVertexAttribArray(gl::Position.Location);
-	gl::VertexAttribPointer(gl::Position.Location, 2, gl::FLOAT, false, 7 * sizeof(float), 0);
-
-	gl::EnableVertexAttribArray(gl::Color.Location);
-	gl::VertexAttribPointer(gl::Color.Location, 3, gl::FLOAT, false, 7 * sizeof(float), (void*)(2 * sizeof(float)));
-
-	gl::EnableVertexAttribArray(gl::UV.Location);
-	gl::VertexAttribPointer(gl::UV.Location, 2, gl::FLOAT, false, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	vertices.bind();
+	indices.bind();
 
 	Shader shader;
 	shader.fromFile("default.vert", "default.frag");
 
-	GLint uniloc_Texture = gl::GetUniformLocation(shader.getProgram(), "Texture");
+	const GLint uniloc_Texture = shader.getUniformLocation("Texture");
 	shader.setUniform(uniloc_Texture, 0);
 
 	Texture texture;
@@ -99,6 +155,8 @@ int main()
 
 	while (wnd.isOpen())
 	{
+		gl::GetAllErrors();
+
 		wnd.update();
 
 		Context::Clear({ 0, 0, 0, 0 });
@@ -106,7 +164,7 @@ int main()
 		shader.bind();
 		texture.bind();
 
-		gl::DrawElements(gl::TRIANGLES, indices.size(), gl::UNSIGNED_INT, 0);
+		gl::DrawElements(gl::TRIANGLES, indices.getSize(), gl::UNSIGNED_INT, 0);
 
 		texture.unbind();
 		shader.unbind();
@@ -114,6 +172,77 @@ int main()
 		Context::Swap();
 	}
 
-	gl::DeleteBuffers(1, &vbo);
-	gl::DeleteBuffers(1, &ebo);
+	/**/
+
+	/**
+	Shader shader;
+	shader.fromFile("default.vert", "default.frag");
+
+	Texture texture;
+	texture.fromFile("test.png");
+
+	GLint uTexLoc = shader.getUniformLocation("Texture");
+
+	shader.setUniform(uTexLoc, 0);
+
+	SpriteBatch batch(10);
+
+	Sprite s1;
+	s1.Position = { 0, 0, 0 };
+	s1.Size = { 1, 1 };
+	s1.Rotation = { 0 };
+	s1.Color = { 1, 1, 1, 1 };
+	s1.TexCoords[0] = { 0, 1 };
+	s1.TexCoords[1] = { 1, 0 };
+
+	while (wnd.isOpen())
+	{
+		gl::GetAllErrors();
+
+		wnd.update();
+
+		Context::Clear({ 0, 0, 0, 0 });
+
+		batch.Begin(&texture, &shader);
+		{
+			batch.Draw(s1);
+		}
+		batch.End();
+
+		Context::Swap();
+	}
+	/**/
+
+	/**
+	Shader shader;
+	shader.fromFile("default.vert", "default.frag");
+	shader.setUniform(shader.getUniformLocation("Texture"), 0);
+
+	Texture texture;
+	texture.fromFile("test.png");
+
+	const size_t count = FindSquare(100);
+	std::printf("count = %d\n", count);
+
+	Sprite* sprites = new Sprite[count];
+	for (size_t i = 0; i < count; i++)
+	{
+		const int square = (int)sqrtl(count);
+		sprites[i].setPosition({ -0.1f * (square / 2) + 0.1f * (i % square), -0.1f * (square / 2) + 0.1f * (i / square), 0 });
+		sprites[i].setSize({ 0.1f, 0.1f });
+		sprites[i].setTexture(texture);
+	}
+	
+	while (wnd.isOpen())
+	{
+		wnd.update();
+
+		Context::Clear({ 0, 0, 0, 0 });
+
+		for (size_t i = 0; i < count; i++)
+			sprites[i].draw(shader);
+
+		Context::Swap();
+	}
+	/**/
 }
