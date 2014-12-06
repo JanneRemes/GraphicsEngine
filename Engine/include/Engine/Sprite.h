@@ -14,18 +14,22 @@ public:
 	Sprite(const glm::vec3& position, const glm::vec2& size, Texture& texture);
 
 	void setPosition(const glm::vec3& position);
-
 	void setSize(const glm::vec2& size);
-
 	void setRotation(float rotation);
-
 	void setColor(const glm::vec4& color);
-
 	void setTexCoords(const glm::vec2& from, const glm::vec2& to);
-
 	void setTexture(Texture& texture);
 
+	const glm::vec3& getPosition() const;
+	const glm::vec2& getSize() const;
+	float getRotation() const;
+	const glm::vec4& getColor() const;
+	const glm::vec4& getTexCoords() const;
+	Texture* getTexture() const;
+
 	void draw(Shader& shader);
+
+	std::vector<Vertex> generateVertexData() const;
 private:
 	void update();
 

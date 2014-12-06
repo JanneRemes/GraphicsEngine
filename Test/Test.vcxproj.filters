@@ -28,7 +28,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="test.png">
+    <Image Include="test1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="test2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="test3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="test4.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

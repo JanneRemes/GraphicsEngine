@@ -8,11 +8,11 @@
 
 class Shader final
 {
-	bool getCompileStatus(GLuint shader);
-	bool getLinkStatus(GLuint program);
+	static bool getCompileStatus(GLuint shader);
+	static bool getLinkStatus(GLuint program);
 
-	std::string getShaderInfoLog(GLuint shader);
-	std::string getProgramInfoLog(GLuint program);
+	static std::string getShaderInfoLog(GLuint shader);
+	static std::string getProgramInfoLog(GLuint program);
 
 	bool init(const char* vertexSource, const char* fragmentSource);
 	void deinit();
@@ -29,7 +29,7 @@ public:
 
 	void bind();
 	void unbind();
-	void unbindImmidiate();
+	void unbindImmediate();
 
 	GLint getUniformLocation(const std::string& name) const;
 	void setUniform(GLuint location, const glm::mat4& mat, bool transpose);

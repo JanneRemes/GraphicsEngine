@@ -29,6 +29,7 @@
     <ClCompile Include="source\Graphics.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\SpriteBatch.cpp" />
     <ClCompile Include="source\Texture.cpp" />
     <ClCompile Include="source\Window.cpp" />
   </ItemGroup>

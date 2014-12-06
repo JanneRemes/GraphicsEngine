@@ -92,7 +92,10 @@
     <None Include="default.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="test.png" />
+    <Image Include="test1.png" />
+    <Image Include="test2.png" />
+    <Image Include="test3.png" />
+    <Image Include="test4.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

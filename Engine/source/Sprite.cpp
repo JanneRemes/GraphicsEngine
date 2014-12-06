@@ -44,6 +44,36 @@ void Sprite::setTexture(Texture& texture)
 	m_Texture = &texture;
 }
 
+const glm::vec3& Sprite::getPosition() const
+{
+	return m_Position;
+}
+
+const glm::vec2& Sprite::getSize() const
+{
+	return m_Size;
+}
+
+float Sprite::getRotation() const
+{
+	return m_Rotation;
+}
+
+const glm::vec4& Sprite::getColor() const
+{
+	return m_Color;
+}
+
+const glm::vec4& Sprite::getTexCoords() const
+{
+	return m_TexCoords;
+}
+
+Texture* Sprite::getTexture() const
+{
+	return m_Texture;
+}
+
 void Sprite::draw(Shader& shader)
 {
 	if (m_HasChanged)
@@ -54,19 +84,22 @@ void Sprite::draw(Shader& shader)
 	shader.bind();
 
 	if (m_Texture != nullptr)
+	{
 		m_Texture->bind();
-
-	gl::DrawElements(gl::TRIANGLES, m_Indices.getSize(), gl::UNSIGNED_INT, 0);
-
-	if (m_Texture != nullptr)
+		gl::DrawElements(gl::TRIANGLES, m_Indices.getSize(), gl::UNSIGNED_INT, 0);
 		m_Texture->unbind();
+	}
+	else
+	{
+		gl::DrawElements(gl::TRIANGLES, m_Indices.getSize(), gl::UNSIGNED_INT, 0);
+	}
 
 	shader.unbind();
 	m_Indices.unbind();
 	m_Vertices.unbind();
 }
 
-void Sprite::update()
+std::vector<Vertex> Sprite::generateVertexData() const
 {
 	const glm::vec2 position[2]
 	{
@@ -74,43 +107,38 @@ void Sprite::update()
 		Math::Rotate(glm::vec2(m_Position) + m_Size * 0.5f, m_Rotation),
 	};
 
-	m_Vertices.setData(
+	return std::vector<Vertex>
 	{
-		/*
-			Position
-			Normal
-			Color
-			TexCoords
-		*/
-
+		// Position, Normal, Color, TexCoords
 		{
 			{ position[0].x, position[0].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
 			{ m_TexCoords.x, m_TexCoords.y }
 		},
-
 		{
 			{ position[0].x, position[1].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
 			{ m_TexCoords.x, m_TexCoords.w }
 		},
-
 		{
 			{ position[1].x, position[1].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
 			{ m_TexCoords.z, m_TexCoords.w }
 		},
-
 		{
 			{ position[1].x, position[0].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
 			{ m_TexCoords.z, m_TexCoords.y }
 		},
-	});
+	};
+}
 
+void Sprite::update()
+{
+	m_Vertices.setData(generateVertexData());
 	m_HasChanged = false;
 }

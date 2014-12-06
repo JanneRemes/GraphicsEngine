@@ -141,6 +141,10 @@ bool Shader::init(const char* vertexSource, const char* fragmentSource)
 	gl::BindAttribLocation(m_Program, gl::Normal.Location,   gl::Normal.Name);
 	gl::BindAttribLocation(m_Program, gl::UV.Location,       gl::UV.Name);
 	gl::LinkProgram(m_Program);
+	gl::DetachShader(m_Program, m_FragmentShader);
+	gl::DetachShader(m_Program, m_VertexShader);
+	gl::DeleteShader(m_FragmentShader);
+	gl::DeleteShader(m_VertexShader);
 	if (!getLinkStatus(m_Program))
 	{
 		std::cerr << getProgramInfoLog(m_VertexShader);
@@ -183,7 +187,7 @@ void Shader::unbind()
 	}
 }
 
-void Shader::unbindImmidiate()
+void Shader::unbindImmediate()
 {
 	m_BindCount = 0;
 	gl::UseProgram(0);
