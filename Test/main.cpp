@@ -4,9 +4,8 @@
 #include <Engine/Shader.h>
 #include <Engine/Texture.h>
 #include <Engine/Math.h>
-#include <glm/glm.hpp>
-
 #include <Engine/SpriteBatch.h>
+#include <glm/glm.hpp>
 
 int main()
 {
@@ -39,7 +38,7 @@ int main()
 	shader.setUniform(uniloc_Texture, 0);
 
 	Texture texture;
-	texture.fromFile("test.png");
+	texture.fromFile("test1.png");
 
 	while (wnd.isOpen())
 	{
@@ -62,7 +61,7 @@ int main()
 
 	/**/
 
-	/**/
+	/**
 	Shader shader;
 	shader.fromFile("default.vert", "default.frag");
 	shader.setUniform(shader.getUniformLocation("Texture"), 0);

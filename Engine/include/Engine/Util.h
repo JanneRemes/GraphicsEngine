@@ -138,6 +138,17 @@ public:
 		return false; // Error: Unable to open file
 	}
 
+	static bool ReadFile(const std::string& filepath, std::vector<char>& out)
+	{
+		std::ifstream in(filepath, std::ios::ate);
+		const size_t length = static_cast<size_t>(in.tellg());
+		out.resize(length);
+		in.seekg(0, std::ios::beg);
+		in.read(out.data(), length);
+		return !in.fail();
+	}
+
+
 	static std::wstring Convert(const std::string& str)
 	{
 		return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().from_bytes(str);
@@ -174,12 +185,12 @@ public:
 
 	static void ShowMessage(const std::string& msg, const std::string& title = "", size_t style = MB_ICONINFORMATION)
 	{
-		MessageBox(nullptr, Util::Convert(msg).c_str(), Util::Convert(title).c_str(), style);
+		MessageBoxW(nullptr, Util::Convert(msg).c_str(), Util::Convert(title).c_str(), style);
 	}
 
 	static void ShowMessage(const std::wstring& msg, const std::wstring& title = L"", size_t style = MB_ICONINFORMATION)
 	{
-		MessageBox(nullptr, msg.c_str(), title.c_str(), style);
+		MessageBoxW(nullptr, msg.c_str(), title.c_str(), style);
 	}
 
 	static std::string GetTimeStamp()
