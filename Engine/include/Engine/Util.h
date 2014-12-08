@@ -24,9 +24,7 @@ enum class Severity
 class Util
 {
 public:
-	/*
-		StringTo<T>
-	*/
+	// ----- StringTo<T> ----- 
 	template<typename T>
 	static bool StringTo(const std::string& str, T& out)
 	{
@@ -82,7 +80,6 @@ public:
 		catch (...) { return false; }
 	}
 	// ----- ----- -----
-
 
 	template<typename T>
 	static size_t GetTypeId()
@@ -148,6 +145,24 @@ public:
 		return !in.fail();
 	}
 
+	static std::string GetExtension(const std::string& filepath)
+	{
+		const size_t lastSlash = std::max(filepath.find_last_of('/'), filepath.find_last_of('\\'));
+		size_t lastDot;
+
+		if (lastSlash != std::string::npos)
+			lastDot = filepath.find_last_of('.', lastSlash);
+		else
+			lastDot = filepath.find_last_of('.');
+
+		if (lastDot != std::string::npos)
+		{
+			auto asd = filepath.substr(lastDot);
+			return asd;
+		}
+		else
+			return "";
+	}
 
 	static std::wstring Convert(const std::string& str)
 	{

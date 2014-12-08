@@ -26,6 +26,9 @@
     <None Include="default.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="default.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="test1.png">

@@ -1,6 +1,6 @@
 
-#ifndef SPRITEBATCH_H
-#define SPRITEBATCH_H
+#ifndef SPRITE_BATCH_H
+#define SPRITE_BATCH_H
 
 #include <Engine/Sprite.h>
 #include <map>

@@ -6,9 +6,8 @@ Additional libraries : GLEW, LodePNG (GLEW -> glLoadGen)
 Features			 : {
 	[x] Window class (WinAPI wrapper)
 	[x] Context class (OpenGL context wrapper)
-	[ ] AssetManager class (For textures and shaders)
-		[ ] Load any asset from file
-		[ ] Automatic disposal
+	[x] AssetManager class (For textures and shaders)
+		[x] Load any asset from file
 	[x] Vertex- and IndexBuffer classes
 		[x] Upload to VRAM
 	[x] Texture class

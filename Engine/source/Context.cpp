@@ -1,7 +1,7 @@
 
 #include <Engine/Context.h>
 #include <Engine/Util.h>
-#include <Engine/Graphics.h>
+#include <Engine/GL.h>
 #include <iostream>
 
 HWND Context::hwnd = nullptr;

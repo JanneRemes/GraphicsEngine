@@ -2,10 +2,10 @@
 #include <iostream>
 #include <vector>
 
+#include <glm/gtc/type_ptr.hpp>
 #include <Engine/Shader.h>
 #include <Engine/Util.h>
-#include <Engine/Graphics.h>
-#include <glm/gtc/type_ptr.hpp>
+#include <Engine/GL.h>
 
 #ifdef GLSL
 #error 'GLSL' already defined
@@ -87,7 +87,33 @@ Shader::~Shader()
 	deinit();
 }
 
-bool Shader::fromFile(const std::string& vertexPath, const std::string& fragmentPath)
+bool Shader::fromFile(const std::string& shaderPath)
+{
+	std::string shaderSource;
+	if (Util::ReadTextFile(shaderPath, shaderSource))
+	{
+		const size_t vertPos = shaderSource.find(Shader_Delim_Vertex);
+		const size_t fragPos = shaderSource.find(Shader_Delim_Fragment, vertPos);
+
+		if ((vertPos != std::string::npos) &&
+			(fragPos != std::string::npos))
+		{
+			const std::string vertexSource = shaderSource.substr(vertPos, fragPos - vertPos);
+			const std::string fragmentSource = shaderSource.substr(fragPos);
+			return init(vertexSource.c_str(), fragmentSource.c_str());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Shader::fromFiles(const std::string& vertexPath, const std::string& fragmentPath)
 {
 	std::string vertexSource;
 	std::string fragmentSource;

@@ -11,8 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Engine\Asset.h" />
+    <ClInclude Include="include\Engine\AssetManager.h" />
     <ClInclude Include="include\Engine\Context.h" />
-    <ClInclude Include="include\Engine\Graphics.h" />
+    <ClInclude Include="include\Engine\GL.h" />
     <ClInclude Include="include\Engine\IndexBuffer.h" />
     <ClInclude Include="include\Engine\Math.h" />
     <ClInclude Include="include\Engine\Shader.h" />
@@ -25,8 +27,9 @@
     <ClInclude Include="include\Engine\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AssetManager.cpp" />
     <ClCompile Include="source\Context.cpp" />
-    <ClCompile Include="source\Graphics.cpp" />
+    <ClCompile Include="source\GL.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SpriteBatch.cpp" />

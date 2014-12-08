@@ -7,7 +7,9 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-class Texture final
+#include <Engine/Asset.h>
+
+class Texture final : public Asset
 {
 	bool init(const unsigned char* png, size_t size);
 

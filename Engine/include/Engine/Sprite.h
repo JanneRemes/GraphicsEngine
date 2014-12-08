@@ -33,10 +33,10 @@ public:
 private:
 	void update();
 
-	glm::vec3 m_Position = { 0, 0, 0 };
-	glm::vec2 m_Size = { 1, 1 };
-	float m_Rotation = { 0 };
-	glm::vec4 m_Color = { 1, 1, 1, 1 };
+	glm::vec3 m_Position  = { 0, 0, 0 };
+	glm::vec2 m_Size      = { 1, 1 };
+	float m_Rotation      = { 0 };
+	glm::vec4 m_Color     = { 1, 1, 1, 1 };
 	glm::vec4 m_TexCoords = { 0, 1, 1, 0 };
 
 	bool m_HasChanged = true;

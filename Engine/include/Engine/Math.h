@@ -25,9 +25,7 @@ struct Math
 		return radians * static_cast<T>(DEG_TO_RAD);
 	}
 
-	/*
-		Rotate - Vector2f
-	*/
+	// ---- Rotate - Vector2f
 
 	static glm::vec2 Rotate(const glm::vec2& vec, float deg)
 	{

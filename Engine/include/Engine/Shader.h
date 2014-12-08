@@ -4,9 +4,12 @@
 
 #include <wgl_core_2_1/wgl.h>
 #include <glm/glm.hpp>
-#include <string>
+#include <Engine/Asset.h>
 
-class Shader final
+#define Shader_Delim_Vertex   "//<VERTEX"
+#define Shader_Delim_Fragment "//<FRAGMENT"
+
+class Shader final : public Asset
 {
 	static bool getCompileStatus(GLuint shader);
 	static bool getLinkStatus(GLuint program);
@@ -22,9 +25,11 @@ public:
 
 	Shader() = default;
 	Shader(const Shader& other) = default;
+	Shader(const std::string& shaderPath);
 	~Shader();
 
-	bool fromFile(const std::string& vertexPath, const std::string& fragmentPath);
+	bool fromFile(const std::string& shaderPath);
+	bool fromFiles(const std::string& vertexPath, const std::string& fragmentPath);
 	bool fromSource(const std::string& vertexSource, const std::string& fragmentSource);
 
 	void bind();

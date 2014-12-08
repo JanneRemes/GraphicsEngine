@@ -3,8 +3,8 @@
 #define CONTEXT_H
 
 #include <wgl_core_2_1/wgl.h>
-#include <Engine/Graphics.h>
 #include <Engine/Window.h>
+#include <Engine/GL.h>
 
 class Context
 {

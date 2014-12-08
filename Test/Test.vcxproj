@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
+    <None Include="default.glsl" />
     <None Include="default.vert" />
   </ItemGroup>
   <ItemGroup>
