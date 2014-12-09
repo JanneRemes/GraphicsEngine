@@ -5,10 +5,8 @@
 #include <Engine/Texture.h>
 #include <Engine/Math.h>
 #include <Engine/SpriteBatch.h>
-#include <glm/glm.hpp>
-
 #include <Engine/AssetManager.h>
-
+#include <glm/glm.hpp>
 
 int main(int argc, char** argv)
 {
@@ -50,10 +48,10 @@ int main(int argc, char** argv)
 			2, 3, 0,
 		});
 
-		auto texture = assets.load<Texture>("test1.png");
+		auto texture = assets.load<Texture>("images\\test1.png");
 		texture->bind();
 
-		auto shader = assets.load<Shader>("default.glsl");
+		auto shader = assets.load<Shader>("shaders\\default.glsl");
 		shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
 		while (wnd.isOpen())
@@ -85,10 +83,10 @@ int main(int argc, char** argv)
 
 	// Using Sprite
 	/**
-	auto shader = assets.load<Shader>("default.glsl");
+	auto shader = assets.load<Shader>("shaders\\default.glsl");
 	shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
-	auto texture = assets.load<Texture>("test1.png");
+	auto texture = assets.load<Texture>("images\\test1.png");
 
 	const size_t count = 100;
 	Sprite* sprites = new Sprite[count];
@@ -114,16 +112,16 @@ int main(int argc, char** argv)
 	/**/
 
 	// Using SpriteBatch
-	/**/
+	/**
 	{
-		auto shader = assets.load<Shader>("default.glsl");
+		auto shader = assets.load<Shader>("shaders\\default.glsl");
 		shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
 		std::vector<Texture*> textures;
-		textures.push_back(assets.load<Texture>("test1.png"));
-		textures.push_back(assets.load<Texture>("test2.png"));
-		textures.push_back(assets.load<Texture>("test3.png"));
-		textures.push_back(assets.load<Texture>("test4.png"));
+		textures.push_back(assets.load<Texture>("images\\test1.png"));
+		textures.push_back(assets.load<Texture>("images\\test2.png"));
+		textures.push_back(assets.load<Texture>("images\\test3.png"));
+		textures.push_back(assets.load<Texture>("images\\test4.png"));
 
 		const size_t count = 100;
 		Sprite* sprites = new Sprite[count];

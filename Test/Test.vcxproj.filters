@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\models">
+      <UniqueIdentifier>{4e81b5cd-cca0-44b9-8898-bdce0d7722d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\models\teapot">
+      <UniqueIdentifier>{73dd5530-4b04-468a-8f80-37db9778b379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\models\cube">
+      <UniqueIdentifier>{5878cd5c-642f-48a6-af70-c50d31c4b115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{25e109ab-f655-4e2c-8fe3-3afd2fa2d6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\images">
+      <UniqueIdentifier>{112011d9-8280-4531-bd4f-ff79ef827753}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,28 +35,42 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="default.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="default.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="test1.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\images</Filter>
     </Image>
     <Image Include="test2.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\images</Filter>
     </Image>
     <Image Include="test3.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\images</Filter>
     </Image>
     <Image Include="test4.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\images</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="models\cube\cube.obj">
+      <Filter>Resource Files\models\cube</Filter>
+    </Resource>
+    <Resource Include="models\teapot\teapot.obj">
+      <Filter>Resource Files\models\teapot</Filter>
+    </Resource>
+    <Resource Include="models\teapot\teapot.mtl">
+      <Filter>Resource Files\models\teapot</Filter>
+    </Resource>
+    <Resource Include="models\teapot\blue.png">
+      <Filter>Resource Files\models\teapot</Filter>
+    </Resource>
+    <Resource Include="models\cube\strips.png">
+      <Filter>Resource Files\models\cube</Filter>
+    </Resource>
+    <Resource Include="models\cube\cube.mtl">
+      <Filter>Resource Files\models\cube</Filter>
+    </Resource>
   </ItemGroup>
 </Project>

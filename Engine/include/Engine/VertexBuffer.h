@@ -3,16 +3,9 @@
 #define VERTEX_BUFFER_H
 
 #include <Engine/Buffer.h>
+#include <Engine/Vertex.h>
 #include <Engine/GL.h>
 #include <glm/glm.hpp>
-
-struct Vertex
-{
-	glm::vec3 Position;
-	glm::vec3 Normal;
-	glm::vec4 Color;
-	glm::vec2 UV;
-};
 
 class VertexBuffer : public Buffer<Vertex>
 {

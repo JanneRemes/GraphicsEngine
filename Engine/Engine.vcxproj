@@ -16,13 +16,17 @@
     <ClInclude Include="include\Engine\Context.h" />
     <ClInclude Include="include\Engine\GL.h" />
     <ClInclude Include="include\Engine\IndexBuffer.h" />
+    <ClInclude Include="include\Engine\Material.h" />
     <ClInclude Include="include\Engine\Math.h" />
+    <ClInclude Include="include\Engine\Mesh.h" />
+    <ClInclude Include="include\Engine\Model.h" />
     <ClInclude Include="include\Engine\Shader.h" />
     <ClInclude Include="include\Engine\Sprite.h" />
     <ClInclude Include="include\Engine\SpriteBatch.h" />
     <ClInclude Include="include\Engine\Texture.h" />
     <ClInclude Include="include\Engine\Util.h" />
     <ClInclude Include="include\Engine\Buffer.h" />
+    <ClInclude Include="include\Engine\Vertex.h" />
     <ClInclude Include="include\Engine\VertexBuffer.h" />
     <ClInclude Include="include\Engine\Window.h" />
   </ItemGroup>
@@ -30,6 +34,8 @@
     <ClCompile Include="source\AssetManager.cpp" />
     <ClCompile Include="source\Context.cpp" />
     <ClCompile Include="source\GL.cpp" />
+    <ClCompile Include="source\Material.cpp" />
+    <ClCompile Include="source\Model.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SpriteBatch.cpp" />
