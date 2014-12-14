@@ -8,7 +8,7 @@
 #include <Engine/AssetManager.h>
 #include <glm/glm.hpp>
 
-int main(int argc, char** argv)
+int main()
 {
 	Window wnd({ 800, 600 }, "Title");
 	Context::Init(wnd);
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 		Context::Swap();
 	}
 	/**/
-
+	
 	// Using SpriteBatch
 	/**
 	{
