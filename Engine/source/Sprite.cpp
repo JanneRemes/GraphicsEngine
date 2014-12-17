@@ -103,8 +103,8 @@ std::vector<Vertex> Sprite::generateVertexData() const
 {
 	const glm::vec2 position[2]
 	{
-		Math::Rotate(glm::vec2(m_Position) - m_Size * 0.5f, m_Rotation),
-		Math::Rotate(glm::vec2(m_Position) + m_Size * 0.5f, m_Rotation),
+		math::Rotate(glm::vec2(m_Position) - m_Size * 0.5f, m_Rotation),
+		math::Rotate(glm::vec2(m_Position) + m_Size * 0.5f, m_Rotation),
 	};
 
 	return std::vector<Vertex>

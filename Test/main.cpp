@@ -6,6 +6,7 @@
 #include <Engine/Math.h>
 #include <Engine/SpriteBatch.h>
 #include <Engine/AssetManager.h>
+#include <Engine/Model.h>
 #include <glm/glm.hpp>
 
 int main()
@@ -31,8 +32,16 @@ int main()
 		return nullptr;
 	});
 
+	assets.registerLoadFunc<Model>([](const std::string& filepath) -> Asset*
+	{
+		Model* newModel = new Model;
+		if (newModel->fromFile(filepath))
+			return newModel;
+		return nullptr;
+	});
+
 	// Using VertexBuffer
-	/**
+	/*
 	{
 		VertexBuffer vertices(
 		{
@@ -48,10 +57,10 @@ int main()
 			2, 3, 0,
 		});
 
-		auto texture = assets.load<Texture>("images\\test1.png");
+		auto texture = assets.load<Texture>("images/test0.png");
 		texture->bind();
 
-		auto shader = assets.load<Shader>("shaders\\default.glsl");
+		auto shader = assets.load<Shader>("shaders/default.glsl");
 		shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
 		while (wnd.isOpen())
@@ -79,14 +88,14 @@ int main()
 			Context::Swap();
 		}
 	}
-	/**/
+	//*/
 
 	// Using Sprite
-	/**
-	auto shader = assets.load<Shader>("shaders\\default.glsl");
+	/*
+	auto shader = assets.load<Shader>("shaders/default.glsl");
 	shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
-	auto texture = assets.load<Texture>("images\\test1.png");
+	auto texture = assets.load<Texture>("images/test1.png");
 
 	const size_t count = 100;
 	Sprite* sprites = new Sprite[count];
@@ -109,19 +118,19 @@ int main()
 
 		Context::Swap();
 	}
-	/**/
+	//*/
 	
 	// Using SpriteBatch
-	/**
+	/*
 	{
-		auto shader = assets.load<Shader>("shaders\\default.glsl");
+		auto shader = assets.load<Shader>("shaders/default.glsl");
 		shader->setUniform(shader->getUniformLocation("Texture"), 0);
 
 		std::vector<Texture*> textures;
-		textures.push_back(assets.load<Texture>("images\\test1.png"));
-		textures.push_back(assets.load<Texture>("images\\test2.png"));
-		textures.push_back(assets.load<Texture>("images\\test3.png"));
-		textures.push_back(assets.load<Texture>("images\\test4.png"));
+		textures.push_back(assets.load<Texture>("images/test1.png"));
+		textures.push_back(assets.load<Texture>("images/test2.png"));
+		textures.push_back(assets.load<Texture>("images/test3.png"));
+		textures.push_back(assets.load<Texture>("images/test4.png"));
 
 		const size_t count = 100;
 		Sprite* sprites = new Sprite[count];
@@ -151,5 +160,38 @@ int main()
 			Context::Swap();
 		}
 	}
-	/**/
+	//*/
+
+	// Using Model
+	/*
+	{
+		Model* model = assets.load<Model>("models/cube/cube.obj");
+
+		if (model)
+		{
+			std::fprintf(stdout, "Info: The model was loaded successfully.\n");
+		}
+		else
+		{
+			std::fprintf(stderr, "Error: Unable to load model file\n");
+			std::abort();
+		}
+
+		auto shader = assets.load<Shader>("shaders/default.glsl");
+		shader->setUniform(shader->getUniformLocation("Texture"), 0);
+
+		while (wnd.isOpen())
+		{
+			gl::GetAllErrors();
+
+			wnd.update();
+
+			Context::Clear({ 0, 0, 0, 0 });
+
+			//model->draw(*shader, assets);
+
+			Context::Swap();
+		}
+	}
+	//*/
 }

@@ -57,16 +57,19 @@
     <ClInclude Include="include\Engine\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Engine\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Engine\Material.h">
+    <ClInclude Include="include\Engine\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Engine\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Engine\Vertex.h">
+    <ClInclude Include="include\Engine\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine\MaterialFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,7 +101,7 @@
     <ClCompile Include="source\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Material.cpp">
+    <ClCompile Include="source\MaterialFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

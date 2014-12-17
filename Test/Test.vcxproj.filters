@@ -35,23 +35,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.glsl">
+    <None Include="shaders\default.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="test1.png">
-      <Filter>Resource Files\images</Filter>
-    </Image>
-    <Image Include="test2.png">
-      <Filter>Resource Files\images</Filter>
-    </Image>
-    <Image Include="test3.png">
-      <Filter>Resource Files\images</Filter>
-    </Image>
-    <Image Include="test4.png">
-      <Filter>Resource Files\images</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="models\cube\cube.obj">
@@ -72,5 +58,22 @@
     <Resource Include="models\cube\cube.mtl">
       <Filter>Resource Files\models\cube</Filter>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\test0.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\test1.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\test2.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\test3.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\test4.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
   </ItemGroup>
 </Project>

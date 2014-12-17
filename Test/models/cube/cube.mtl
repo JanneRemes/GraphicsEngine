@@ -12,4 +12,4 @@ newmtl Material__29
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Kd C:\Users\TTI12SMikaM\Desktop\strips.png
+	map_Kd models/cube/strips.png

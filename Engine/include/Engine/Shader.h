@@ -5,6 +5,7 @@
 #include <wgl_core_2_1/wgl.h>
 #include <glm/glm.hpp>
 #include <Engine/Asset.h>
+#include <string>
 
 #define Shader_Delim_Vertex   "//<VERTEX"
 #define Shader_Delim_Fragment "//<FRAGMENT"

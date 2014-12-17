@@ -8,38 +8,38 @@
 #include <Engine/GL.h>
 
 #ifdef GLSL
-#error 'GLSL' already defined
+	#error 'GLSL' already defined
 #else
-#define GLSL(source) "#version 150 core\n" #source
+	#define GLSL(source) "#version 150 core\n" #source
 
-const std::string Shader::DefaultVertex = GLSL
-(
-	uniform mat4 ModelViewProjection;
-	in      vec3 Position;
-	in      vec4 Color;
-	in      vec3 Normal;
-	in      vec4 UV;
-	out     vec4 FragColor;
+	const std::string Shader::DefaultVertex = GLSL
+	(
+		uniform mat4 ModelViewProjection;
+		in      vec3 Position;
+		in      vec4 Color;
+		in      vec3 Normal;
+		in      vec4 UV;
+		out     vec4 FragColor;
 
-	void main()
-	{
-		FragColor = Color;
-		gl_Position = ModelViewProjection * vec4(Position, 1.0);
-	}
-);
+		void main()
+		{
+			FragColor = Color;
+			gl_Position = ModelViewProjection * vec4(Position, 1.0);
+		}
+	);
 
-const std::string Shader::DefaultFragment = GLSL
-(
-	in  vec4 FragColor;
-	out vec4 FinalColor;
+	const std::string Shader::DefaultFragment = GLSL
+	(
+		in  vec4 FragColor;
+		out vec4 FinalColor;
 
-	void main()
-	{
-		FinalColor = FragColor;
-	}
-);
+		void main()
+		{
+			FinalColor = FragColor;
+		}
+	);
 
-#undef GLSL
+	#undef GLSL
 #endif
 
 /*

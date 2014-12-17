@@ -9,7 +9,7 @@
 #define RAD_TO_DEG 180.0 / M_PI
 #define DEG_TO_RAD M_PI / 180.0
 
-struct Math
+namespace math
 {
 	template<class T>
 	static inline T ToRadians(T degrees)
@@ -37,6 +37,18 @@ struct Math
 			vec.x * cos - vec.y * sin,
 			vec.x * sin + vec.y * cos
 		};
+	}
+
+	template<class T>
+	static inline T min(T a, T b)
+	{
+		return a < b ? a : b;
+	}
+
+	template<class T>
+	static inline T max(T a, T b)
+	{
+		return a > b ? a : b;
 	}
 };
 

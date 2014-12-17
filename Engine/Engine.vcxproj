@@ -17,6 +17,7 @@
     <ClInclude Include="include\Engine\GL.h" />
     <ClInclude Include="include\Engine\IndexBuffer.h" />
     <ClInclude Include="include\Engine\Material.h" />
+    <ClInclude Include="include\Engine\MaterialFile.h" />
     <ClInclude Include="include\Engine\Math.h" />
     <ClInclude Include="include\Engine\Mesh.h" />
     <ClInclude Include="include\Engine\Model.h" />
@@ -34,7 +35,7 @@
     <ClCompile Include="source\AssetManager.cpp" />
     <ClCompile Include="source\Context.cpp" />
     <ClCompile Include="source\GL.cpp" />
-    <ClCompile Include="source\Material.cpp" />
+    <ClCompile Include="source\MaterialFile.cpp" />
     <ClCompile Include="source\Model.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Sprite.cpp" />

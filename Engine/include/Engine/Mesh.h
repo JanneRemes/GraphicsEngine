@@ -2,15 +2,21 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <Engine/Material.h>
-#include <Engine/Vertex.h>
+#include <glm/glm.hpp>
+#include <cstdint>
+#include <vector>
 
-struct Mesh final
+class Material;
+
+class Mesh
 {
-	std::string Name;
-	std::vector<Vertex> m_Vertices;
-	std::vector<GLuint> m_Indices;
-	Material* m_Material;
+public:
+	std::string name;
+	Material* material;
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> texCoords;
+	std::vector<uint32_t> indices;
 };
 
-#endif // Include guard
+#endif

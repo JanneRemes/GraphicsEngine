@@ -2,20 +2,31 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <wgl_core_2_1/wgl.h>
-#include <glm/glm.hpp>
-#include <fstream>
+#include <Engine/Asset.h>
+#include <Engine/Shader.h>
+#include <Engine/VertexBuffer.h>
+#include <Engine/IndexBuffer.h>
+#include <string>
 #include <vector>
-#include <Engine/Mesh.h>
-#include <Engine/Material.h>
 
-class Model
+class Mesh;
+class Material;
+class MaterialFile;
+
+class Model : public Asset
 {
 public:
+	~Model();
+	void draw(Shader& shader, AssetManager& assets);
 	bool fromFile(const std::string& filepath);
-
 private:
-	std::vector<Mesh> m_Meshes;
+	Material* findMaterial(const std::string& name) const;
+	void clear();
+
+	VertexBuffer m_VertexBuffer;
+	IndexBuffer m_IndexBuffer;
+	std::vector<Mesh*> m_Meshes;
+	std::vector<MaterialFile*> m_MaterialFiles;
 };
 
-#endif // Include guard
+#endif
