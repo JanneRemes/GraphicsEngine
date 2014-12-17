@@ -1,9 +1,9 @@
 
-Platform			 : Windows 32-bit
-Language			 : C++
-Graphics API		 : OpenGL
-Additional libraries : GLEW, LodePNG (GLEW -> glLoadGen)
-Features			 : {
+Platform             : Windows 32-bit
+Language             : C++
+Graphics API         : OpenGL
+Additional libraries : glLoadGen, LodePNG
+Features             : {
 	[x] Window class (WinAPI wrapper)
 	[x] Context class (OpenGL context wrapper)
 	[x] AssetManager class (For textures and shaders)
@@ -13,10 +13,10 @@ Features			 : {
 	[x] Texture class
 		[x] Load from file (.png)
 	[x] Shader class
-		[x] Load from file (.vert, .frag)
-	[ ] Mesh class
-		[ ] Load from file (.obj)
-		[ ] Support for textures
+		[x] Load from file (.vert, .frag, .glsl)
+	[x] Mesh class
+		[x] Load from file (.obj)
+		[x] Support for textures
 		[ ] Simple drawing
 	[x] Sprite class
 		[x] Can be batched
