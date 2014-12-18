@@ -14,12 +14,12 @@ public:
 	float ni;
 	float d;
 	float tr;
-	glm::vec3 tf;
+	glm::vec4 tf;
 	uint32_t illum;
-	glm::vec3 ka;
-	glm::vec3 kd;
-	glm::vec3 ks;
-	glm::vec3 ke;
+	glm::vec4 ka;
+	glm::vec4 kd;
+	glm::vec4 ks;
+	glm::vec4 ke;
 	std::string map_kd;
 };
 

@@ -1,4 +1,4 @@
-
+﻿
 #include <Engine/Model.h>
 #include <Engine/MaterialFile.h>
 #include <Engine/Material.h>
@@ -19,27 +19,28 @@ Model::~Model()
 
 void Model::draw(Shader& shader, AssetManager& assets)
 {
-	m_VertexBuffer.bind();
-	m_IndexBuffer.bind();
-
 	std::vector<Vertex> vertexData;
 	Vertex vertex;
-	vertex.Normal = { 0, 0, 0 };
-	vertex.Color = { 1, 1, 1, 1 };
+
+	gl::Enable(gl::DEPTH_TEST);
 
 	for (auto& mesh : m_Meshes)
 	{
 		for (size_t i = 0; i < mesh->indices.size(); i++)
 		{
 			vertex.Position = mesh->vertices[i];
-			//vertex.Normal = mesh->normals[i];
-			vertex.UV.x = mesh->texCoords[i].x;
-			vertex.UV.y = mesh->texCoords[i].y;
+			vertex.Normal = mesh->normals[i];
+			vertex.Color = mesh->material->kd;
+			vertex.UV = mesh->texCoords[i];
 			vertexData.emplace_back(vertex);
 		}
 
 		m_VertexBuffer.setData(vertexData);
 		m_IndexBuffer.setData(mesh->indices);
+		
+		m_VertexBuffer.bind();
+		m_IndexBuffer.bind();
+		
 		shader.bind();
 
 		Texture* texture = assets.load<Texture>(mesh->material->map_kd);
@@ -47,7 +48,6 @@ void Model::draw(Shader& shader, AssetManager& assets)
 		if (texture)
 		{
 			texture->bind();
-			gl::GetAllErrors();
 			gl::DrawElements(gl::TRIANGLES, mesh->indices.size(), gl::UNSIGNED_INT, 0);
 			texture->unbind();
 		}

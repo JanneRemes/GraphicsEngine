@@ -18,7 +18,7 @@ namespace gl
 	const VertexAttribute Position = { 0, 3, sizeof(glm::vec3), "Position" };
 	const VertexAttribute Color    = { 1, 4, sizeof(glm::vec4), "Color" };
 	const VertexAttribute Normal   = { 2, 3, sizeof(glm::vec3), "Normal" };
-	const VertexAttribute UV       = { 3, 2, sizeof(glm::vec2), "UV" };
+	const VertexAttribute UV       = { 3, 3, sizeof(glm::vec3), "UV" };
 
 	void GetAllErrors();
 }						  

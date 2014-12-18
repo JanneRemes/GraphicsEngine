@@ -2,6 +2,10 @@
 //<VERTEX
 #version 150 core
 
+uniform mat4 World;
+uniform mat4 View;
+uniform mat4 Projection;
+
 in vec3 Position;
 in vec4 Normal;
 in vec4 Color;
@@ -14,7 +18,7 @@ void main()
 {
 	FragColor = Color;
 	FragUV = UV;
-	gl_Position = vec4(Position, 1.0);
+	gl_Position = Projection * View * World * vec4(Position, 1.0);
 }
 
 //<FRAGMENT
@@ -28,5 +32,5 @@ out vec4 FinalColor;
 
 void main()
 {
-	FinalColor = FragColor * texture(Texture, FragUV);
+	FinalColor = FragColor * texture(Texture, FragUV.xy);
 }

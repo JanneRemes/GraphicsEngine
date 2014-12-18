@@ -114,25 +114,25 @@ std::vector<Vertex> Sprite::generateVertexData() const
 			{ position[0].x, position[0].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
-			{ m_TexCoords.x, m_TexCoords.y }
+			{ m_TexCoords.x, m_TexCoords.y, 0 }
 		},
 		{
 			{ position[0].x, position[1].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
-			{ m_TexCoords.x, m_TexCoords.w }
+			{ m_TexCoords.x, m_TexCoords.w, 0 }
 		},
 		{
 			{ position[1].x, position[1].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
-			{ m_TexCoords.z, m_TexCoords.w }
+			{ m_TexCoords.z, m_TexCoords.w, 0 }
 		},
 		{
 			{ position[1].x, position[0].y, m_Position.z },
 			{ 0, 0, 0 },
 			{ m_Color.r, m_Color.g, m_Color.g, m_Color.a },
-			{ m_TexCoords.z, m_TexCoords.y }
+			{ m_TexCoords.z, m_TexCoords.y, 0 }
 		},
 	};
 }
