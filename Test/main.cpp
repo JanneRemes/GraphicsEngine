@@ -28,6 +28,7 @@ int main()
 		Shader* newShader = new Shader;
 		if (newShader->fromFile(filepath))
 			return newShader;
+		delete newShader;
 		return nullptr;
 	});
 
@@ -36,6 +37,7 @@ int main()
 		Texture* newTexture = new Texture;
 		if (newTexture->fromFile(filepath))
 			return newTexture;
+		delete newTexture;
 		return nullptr;
 	});
 
@@ -44,6 +46,7 @@ int main()
 		Model* newModel = new Model;
 		if (newModel->fromFile(filepath))
 			return newModel;
+		delete newModel;
 		return nullptr;
 	});
 
