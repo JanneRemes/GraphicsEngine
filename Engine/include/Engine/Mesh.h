@@ -13,9 +13,7 @@ class Mesh
 public:
 	std::string name;
 	Material* material;
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	std::vector<glm::vec3> texCoords;
+	std::vector<Vertex> vertexData;
 	std::vector<uint32_t> indices;
 };
 

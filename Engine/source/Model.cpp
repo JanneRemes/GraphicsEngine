@@ -19,23 +19,11 @@ Model::~Model()
 
 void Model::draw(Shader& shader, AssetManager& assets)
 {
-	std::vector<Vertex> vertexData;
-	Vertex vertex;
-
 	gl::Enable(gl::DEPTH_TEST);
 
 	for (auto& mesh : m_Meshes)
 	{
-		for (size_t i = 0; i < mesh->indices.size(); i++)
-		{
-			vertex.Position = mesh->vertices[i];
-			vertex.Normal = mesh->normals[i];
-			vertex.Color = mesh->material->kd;
-			vertex.UV = mesh->texCoords[i];
-			vertexData.emplace_back(vertex);
-		}
-
-		m_VertexBuffer.setData(vertexData);
+		m_VertexBuffer.setData(mesh->vertexData);
 		m_IndexBuffer.setData(mesh->indices);
 		
 		m_VertexBuffer.bind();
@@ -59,6 +47,8 @@ void Model::draw(Shader& shader, AssetManager& assets)
 
 	m_VertexBuffer.unbind();
 	m_IndexBuffer.unbind();
+
+	gl::Disable(gl::DEPTH_TEST);
 }
 
 bool Model::fromFile(const std::string& filepath)
@@ -168,14 +158,11 @@ bool Model::fromFile(const std::string& filepath)
 				ss >> indexString >> std::ws;
 				sscanf(indexString.data(), "%d/%d/%d", &vIndices, &tIndices, &nIndices);
 
-				currentMesh->vertices.emplace_back();
-				currentMesh->vertices.back() = vertices[vIndices - 1];
-
-				currentMesh->normals.emplace_back();
-				currentMesh->normals.back() = normals[nIndices - 1];
-
-				currentMesh->texCoords.emplace_back();
-				currentMesh->texCoords.back() = texCoords[tIndices - 1];
+				currentMesh->vertexData.emplace_back();
+				currentMesh->vertexData.back().Position = vertices[vIndices - 1];
+				currentMesh->vertexData.back().Color = currentMesh->material->kd;
+				currentMesh->vertexData.back().Normal = normals[nIndices - 1];
+				currentMesh->vertexData.back().UV = texCoords[tIndices - 1];
 
 				currentMesh->indices.emplace_back();
 				currentMesh->indices.back() = vIndices - 1;
@@ -187,9 +174,7 @@ bool Model::fromFile(const std::string& filepath)
 
 	for (auto& mesh : m_Meshes)
 	{
-		mesh->vertices.shrink_to_fit();
-		mesh->normals.shrink_to_fit();
-		mesh->texCoords.shrink_to_fit();
+		mesh->vertexData.shrink_to_fit();
 		mesh->indices.shrink_to_fit();
 	}
 

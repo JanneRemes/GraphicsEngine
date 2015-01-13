@@ -76,9 +76,4 @@
       <Filter>Resource Files\images</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="models\cube\cube2.obj">
-      <Filter>Resource Files\models\cube</Filter>
-    </Object>
-  </ItemGroup>
 </Project>

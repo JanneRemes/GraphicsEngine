@@ -202,7 +202,6 @@ int main()
 		clock_t before = clock();
 		clock_t now;
 		float delta;
-		uint32_t delay;
 
 		while (wnd.isOpen())
 		{
@@ -210,10 +209,11 @@ int main()
 			delta = (now - before) / static_cast<float>(CLOCKS_PER_SEC);
 			before = now;
 
-			wnd.update();
-
-			World = glm::rotate(angle += turnRate * delta, glm::vec3(0.0f, 1.0f, 0.0f));
+			angle += turnRate * delta;
+			World = glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
 			shader->setUniform(shader->getUniformLocation("World"), World, false);
+
+			wnd.update();
 
 			Context::Clear({ 0, 0, 0, 0 });
 
